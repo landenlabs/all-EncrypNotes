@@ -10,16 +10,17 @@ import android.util.Log;
  * Created by jack on 9/3/16.
  * http://stackoverflow.com/questions/8881951/detect-home-button-press-in-android
  */
+@SuppressWarnings("unused")
 public class HomeWatcher {
 
-    static public interface OnHomePressedListener {
-        public void onHomePressed();
-        public void onHomeLongPressed();
+    interface OnHomePressedListener {
+        void onHomePressed();
+        void onHomeLongPressed();
     }
 
-    static final String TAG = "hg";
-    private Context mContext;
-    private IntentFilter mFilter;
+    private static final String TAG = "hg";
+    private final Context mContext;
+    private final IntentFilter mFilter;
     private OnHomePressedListener mListener;
     private InnerRecevier mRecevier;
 
@@ -54,7 +55,7 @@ public class HomeWatcher {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+            if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(action)) {
                 String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
                 if (reason != null) {
                     Log.e(TAG, "action:" + action + ",reason:" + reason);

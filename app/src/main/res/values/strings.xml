@@ -59,4 +59,25 @@
     <string name="set_global_password">Set Global Password</string>
     <string name="global_pwd_description">Enter Password Hint and\n Password used as default\nwhen saving documents</string>
     <string name="global_password">Global Password</string>
+    <string name="file_menu_delete">Delete</string>
+    <string name="file_menu_info">Info</string>
+    <string name="file_menu_rename">Rename</string>
+    <string name="file_list_name">name</string>
+    <string name="file_list_hint">hint</string>
+    <string name="file_list_mm_dd_yy_hh_mm">mm/dd/yy hh:mm</string>
+    <string name="font_zoom_font_scale">Font Scale</string>
+    <string name="open_dlg_hint_filename">open filename</string>
+    <string name="pw_1">1</string>
+    <string name="pw_2">2</string>
+    <string name="pw_3">3</string>
+    <string name="pw_4">4</string>
+    <string name="pw_5">5</string>
+    <string name="pw_6">6</string>
+    <string name="pw_7">7</string>
+    <string name="pw_8">8</string>
+    <string name="pw_9">9</string>
+    <string name="rename_dlg_from">From:</string>
+    <string name="rename_dlg_to">To:</string>
+    <string name="rename_dlg_new_name">new name</string>
+    <string name="save_dlg_3dots">...</string>
 </resources>

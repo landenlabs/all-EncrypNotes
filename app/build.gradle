@@ -3,26 +3,49 @@ android {
     signingConfigs {
         release
     }
-    compileSdkVersion 24
-    buildToolsVersion '24.0.3'
+    compileSdkVersion 29
+    // buildToolsVersion '24.0.3'
     defaultConfig {
         applicationId "com.landenlabs.encrypnotes"
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion 19
+        targetSdkVersion 29
         versionCode 1701
         versionName '1.7.01'
         signingConfig signingConfigs.release
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+
+            // applicationVariants.all { variant ->
+            //    appendVersionNameVersionCode(variant, defaultConfig)
+            // }
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
 
-            applicationVariants.all { variant ->
-                appendVersionNameVersionCode(variant, defaultConfig)
-            }
+            // applicationVariants.all { variant ->
+            //    appendVersionNameVersionCode(variant, defaultConfig)
+            // }
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('../debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            storeFile file('../release.keystore')
+            storePassword 'wsiweather'
+            keyAlias 'alias_name'
+            keyPassword 'wsiweather'
         }
     }
 
@@ -37,6 +60,11 @@ android {
     productFlavors {
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     // Load signing config.
     def props = new Properties()
     props.load(new FileInputStream(rootProject.file("release.properties")))
@@ -47,10 +75,41 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:24.2.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "com.google.android.gms:play-services-analytics:17.0.0"
+    implementation 'net.hockeyapp.android:HockeySDK:5.1.1'
 
-    compile "com.google.android.gms:play-services-analytics:9.8.0"
-    compile 'net.hockeyapp.android:HockeySDK:4.1.1'
+    // Google sign-in
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
+    // Google Drive
+    implementation 'com.google.api-client:google-api-client:1.23.0'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    implementation 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+
+    implementation 'com.google.apis:google-api-services-tasks:v1-rev48-1.23.0' exclude module: 'httpclient'
+    implementation 'com.google.api-client:google-api-client-android:1.23.0' exclude module: 'httpclient'
+    implementation 'com.google.http-client:google-http-client-gson:1.23.0' exclude module: 'httpclient'
+    implementation 'com.google.android.gms:play-services-identity:17.0.0'
+
+
+    /*
+    // Google Sheets with Firebase
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude group: 'com.google.guava'
+    }
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    implementation('com.google.apis:google-api-services-sheets:v4-rev516-1.23.0') {
+        exclude group: 'com.google.guava'
+    }
+
+    // Firebase image storage
+    implementation 'com.google.firebase:firebase-messaging:20.1.0'
+    implementation 'com.google.firebase:firebase-storage:19.1.0'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
+     */
 }
 
 
@@ -59,8 +118,8 @@ def appendVersionNameVersionCode(variant, defaultConfig) {
         if (output.zipAlign) {
             def file = output.outputFile
             def fileName = file.name.replace(".apk", "-v" + defaultConfig.versionCode + ".apk")
-            def ourname = project.parent.name;
-            fileName = fileName.replace("app-", "$ourname-");
+            def ourname = project.parent.name
+            fileName = fileName.replace("app-", "$ourname-")
             output.outputFile = new File(file.parent, fileName)
         }
 

@@ -36,6 +36,7 @@ import android.os.Environment;
  */
 public class Email {
 
+    @SuppressWarnings({"ConstantConditions", "unused"})
     public static void send(Activity activity, String emailTo, String emailSubject, String emailContent)
     {
         Intent emailIntent = new Intent(Intent.ACTION_SEND);

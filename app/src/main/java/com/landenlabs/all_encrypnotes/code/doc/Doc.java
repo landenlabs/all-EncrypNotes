@@ -21,7 +21,7 @@
  *
  */
 
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.code.doc;
 
 /*
  * (c) 2009.-2014. Ivan Voras <ivoras@fer.hr>
@@ -33,6 +33,7 @@ package com.landenlabs.all_encrypnotes;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
+import com.landenlabs.all_encrypnotes.code.Util;
 import com.landenlabs.all_encrypnotes.ui.LogIt;
 
 import java.io.BufferedInputStream;
@@ -41,7 +42,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -75,35 +75,30 @@ import javax.crypto.spec.SecretKeySpec;
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  * 
  */
+@SuppressWarnings({"JavadocReference", "UnusedReturnValue", "ResultOfMethodCallIgnored", "ConstantConditions", "SameParameterValue"})
 public class Doc {
 
-    static final byte[] SIGNATURE = {0x00, (byte) 0xff, (byte) 0xed, (byte) 0xed};
-    static final byte VERSION_FORMAT = 3;
-    static final byte VERSION_FORMAT_HAS_HINT = 2;
-    static final byte VERSION_FORMAT_HAS_HASH_LEN = 3;
-    static final byte VERSION_MINOR = 5;
-    static final byte VERSION_MINOR_HAS_ENC = 2;
-    static final String ENC = "UTF-8"; //   Charsets.UTF_8 Java 1.7
-    static final int HISTORY_SAME_EDIT_MINUTES = 15;    // Same edit if changes made within these minutes
-    static final int HISTORY_MAX_ENTRIES = 10;
-    static final int HINT_MAX_LEN = 16;
+    private static final byte[] SIGNATURE = {0x00, (byte) 0xff, (byte) 0xed, (byte) 0xed};
+    private static final byte VERSION_FORMAT = 3;
+    private static final byte VERSION_FORMAT_HAS_HINT = 2;
+    private static final byte VERSION_FORMAT_HAS_HASH_LEN = 3;
+    private static final byte VERSION_MINOR = 5;
+    private static final byte VERSION_MINOR_HAS_ENC = 2;
+    private static final String ENC = "UTF-8"; //   Charsets.UTF_8 Java 1.7
+    private static final int HISTORY_SAME_EDIT_MINUTES = 15;    // Same edit if changes made within these minutes
+    private static final int HISTORY_MAX_ENTRIES = 10;
+    private static final int HINT_MAX_LEN = 16;
 
     public static class DocException extends Exception {
 
         private static final long serialVersionUID = -8618217887516753754L;
 
         /**
-         * Creates a new instance of <code>DocException</code> without detail message.
-         */
-        public DocException() {
-        }
-
-        /**
          * Constructs an instance of <code>DocException</code> with the specified detail message.
          *
          * @param msg the detail message.
          */
-        public DocException(String msg) {
+        DocException(String msg) {
             super(msg);
         }
     }
@@ -113,17 +108,11 @@ public class Doc {
         private static final long serialVersionUID = 8526674767186417815L;
 
         /**
-         * Creates a new instance of <code>DocPasswordException</code> without detail message.
-         */
-        public DocPasswordException() {
-        }
-
-        /**
          * Constructs an instance of <code>DocPasswordException</code> with the specified detail message.
          *
          * @param msg the detail message.
          */
-        public DocPasswordException(String msg) {
+        DocPasswordException(String msg) {
             super(msg);
         }
     }
@@ -131,10 +120,10 @@ public class Doc {
     public static class SaveMetadata implements Serializable {
 
         private static final long serialVersionUID = 1L;
-        public long     timestamp;
-        public String   username;
+        long     timestamp;
+        final String   username;
 
-        public SaveMetadata(long timestamp, String username) {
+        SaveMetadata(long timestamp, String username) {
             this.timestamp = timestamp;
             this.username = username;
         }
@@ -147,9 +136,9 @@ public class Doc {
 
         private static final long serialVersionUID = 1L;
 
-        public ArrayList<Doc.SaveMetadata> saveHistory = new ArrayList<Doc.SaveMetadata>();
+        ArrayList<Doc.SaveMetadata> saveHistory = new ArrayList<>();
         public boolean modified = false;
-        public String filename;
+        public  String filename;
         public String hint;
         public int caretPosition;
         public byte[] key;
@@ -167,25 +156,26 @@ public class Doc {
             // oStrm.writeUTF(hint);
         }
 
+        @SuppressWarnings("unused")
         void loadMetadata(DataInputStream iStrm, int minVer) throws IOException {
             caretPosition = iStrm.readInt();
             filename = iStrm.readUTF();
 
             int nSave = iStrm.readInt();
-            saveHistory = new ArrayList<SaveMetadata>(nSave+1);
+            saveHistory = new ArrayList<>(nSave+1);
             for (int idx = 0; idx < nSave; idx++)
                 saveHistory.add(new Doc.SaveMetadata(iStrm.readLong(), iStrm.readUTF()));
 
             // hint = iStrm.readUTF();
         }
 
-        void copyTo(DocMetadata other) {
+        public void copyTo(DocMetadata other) {
             other.caretPosition = caretPosition;
             other.filename = filename;
             other.hint = hint;
             other.modified = modified;
             other.key = key.clone();
-            other.saveHistory = new ArrayList<Doc.SaveMetadata>(saveHistory);
+            other.saveHistory = new ArrayList<>(saveHistory);
         }
         
         public void setKey(String pwd) {
@@ -201,7 +191,7 @@ public class Doc {
     /**
      * The short name of the crypt algorithm used on the files
      */
-    public static final String CRYPTO_ALG = "AES";
+    private static final String CRYPTO_ALG = "AES";
 
     private byte m_verFormat = 0;
     private byte m_verMinor = 0;
@@ -248,7 +238,7 @@ public class Doc {
                 } else {
                     sb.append("\nNew Note\nNot saved");
                 }
-            } catch (Exception ex) {
+            } catch (Exception ignore) {
             }
 
             if (docMetaData != null && docMetaData.saveHistory.size() != 0) {
@@ -266,15 +256,10 @@ public class Doc {
 
     /**
      * Saves the currently edited document to the given file.
-     *
-     * @param outFile
-     * @return
-     * @throws java.io.FileNotFoundException
-     * @throws java.io.IOException
-     * @throws #DocPasswordException
      */
+    @SuppressWarnings("SameReturnValue")
     @SuppressLint("TrulyRandom")
-    public boolean doSave(File outFile, String hint) throws FileNotFoundException, IOException, DocPasswordException {
+    boolean doSave(File outFile, String hint) throws IOException, DocPasswordException {
         assert (m_docMeta.key != null);
 
         String current_user = System.getProperty("user.name");
@@ -360,11 +345,8 @@ public class Doc {
      * @param pwd  set to null to get hint but not decrypt file.
      *
      * @return true if file decrypted
-     *
-     * @throws java.io.FileNotFoundException
-     * @throws java.io.IOException
      */
-    public boolean doOpen(File fOpen, String pwd) throws FileNotFoundException, IOException, DocException, DocPasswordException {
+    public boolean doOpen(File fOpen, String pwd) throws IOException, DocException {
 
         FileInputStream fin = new FileInputStream(fOpen);
         BufferedInputStream bin = new BufferedInputStream(fin);
@@ -446,9 +428,9 @@ public class Doc {
         newdocm.loadMetadata(din, m_verMinor);
 
         // 5. Read encrypted text.
-        if (m_verMinor < VERSION_MINOR_HAS_ENC)
+        if (m_verMinor < VERSION_MINOR_HAS_ENC) {
             newtext = din.readUTF();
-        else {
+        } else {
             int len = din.readInt();
             byte[] ddata = new byte[len];
             int total_read = 0;
@@ -486,9 +468,6 @@ public class Doc {
      * Create cipher to d/encrypt stream.
      *
      * @param cipherMode  Cipher.DECRYPT_MODE or Cipher.ENCRYPT_MODE
-     * @param key
-     * @param randomBytes
-     * @return
      */
     private Cipher getCipher(int cipherMode, byte[] key, byte[] randomBytes)  {
         AlgorithmParameterSpec paramSpec = new IvParameterSpec(randomBytes);

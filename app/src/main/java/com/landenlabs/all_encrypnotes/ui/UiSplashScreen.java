@@ -21,7 +21,7 @@
  *
  */
 
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.ui;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -29,6 +29,8 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.landenlabs.all_encrypnotes.R;
 
 /**
  * Show Large application image and fade out.
@@ -42,7 +44,7 @@ public class UiSplashScreen {
     private ImageView m_splashImg;
     private TextView m_splashTxt;
     private AnimatorSet m_splashAnimatSet;
-    
+
     public UiSplashScreen(Activity context) {
         m_context = context;
     }
@@ -55,9 +57,9 @@ public class UiSplashScreen {
         final int fadeinMsec = 2000;
         final int fadeOutMsec = 1000;
 
-        m_splashImg = (ImageView) m_context.findViewById(R.id.overlay_logo);
+        m_splashImg = m_context.findViewById(R.id.overlay_logo);
         m_splashImg.setVisibility(View.VISIBLE);
-        m_splashTxt = (TextView) m_context.findViewById(R.id.overlay_text);
+        m_splashTxt = m_context.findViewById(R.id.overlay_text);
         m_splashTxt.setVisibility(View.VISIBLE);
         ObjectAnimator fadeImgIn = ObjectAnimator.ofFloat(m_splashImg, "alpha", 0f, 1f);
         fadeImgIn.setDuration(fadeinMsec);

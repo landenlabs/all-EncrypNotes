@@ -47,7 +47,7 @@
 
 
     <!-- Define custom attributes for passwordGrid -->
-    <declare-styleable name="passwordGrid">
+    <declare-styleable name="PasswordGrid">
         <attr name="drawOn" format="color|reference" />
         <attr name="drawOff" format="color|reference" />
         <attr name="pathWidth" format="integer" />

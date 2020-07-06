@@ -21,7 +21,7 @@
  *
  */
 
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.code;
 
 import android.app.Activity;
 import android.content.Context;
@@ -42,6 +42,7 @@ import java.util.Properties;
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  *
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class EncrypPrefs {
 
     public static final String PREFS_FILENAME = "preferences.xls";
@@ -53,7 +54,7 @@ public class EncrypPrefs {
     public float TextScale = 0.0f; // -1.0f = half size, 0=normal, 1.0 = double size.
     public boolean ShowPat = true;
     public boolean ShowPwd = true;
-    public String DefaultPwd = "";
+    private String DefaultPwd = "";
     public String Global_pwd_value = "";
     public String Global_pwd_hint = "";
     
@@ -67,11 +68,13 @@ public class EncrypPrefs {
     private static final String PREF_SHOW_PWD = "showPwd";
     private static final String PREF_DEFAULT_PWD = "defaultPwd";
     private static final String TAG = EncrypPrefs.class.getName();
-    private Activity m_context;
+    private final Activity m_context;
     
     public EncrypPrefs(Activity context) {
         m_context = context;
     }
+
+    @SuppressWarnings("UnusedReturnValue")
     public boolean load() {
         try {
             InputStream is = m_context.openFileInput(PREFS_FILENAME);

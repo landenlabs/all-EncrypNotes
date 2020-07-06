@@ -42,15 +42,16 @@ import com.landenlabs.all_encrypnotes.R;
  * @author Dennis Lang
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  */
+@SuppressWarnings("Convert2Lambda")
 public class SliderDialog extends DialogFragment {
     
-    static final String STATE_LAYOUT = "Layout";
-    static final String STATE_MSGNUM = "MsgNum";
+    private static final String STATE_LAYOUT = "Layout";
+    private static final String STATE_MSGNUM = "MsgNum";
   
-    int m_layoutId;
-    int m_msgNum;
+    private int m_layoutId;
+    private int m_msgNum;
     
-    OnSeekBarChangeListener m_seekListener;
+    private OnSeekBarChangeListener m_seekListener;
     // OnClickListener m_clickListener;
 
     public SliderDialog() {
@@ -105,7 +106,7 @@ public class SliderDialog extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(m_layoutId, null);
         builder.setView(view);
 
-        SeekBar seek = (SeekBar) view.findViewById(R.id.dialog_seekbar);
+        SeekBar seek = view.findViewById(R.id.dialog_seekbar);
         if (seek != null) {
             seek.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -121,14 +122,14 @@ public class SliderDialog extends DialogFragment {
                 public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
                     m_seekListener.onProgressChanged(arg0, m_msgNum, arg2);
                     View view = (View) arg0.getParent();
-                    TextView numTV = (TextView) view.findViewById(R.id.dialog_num);
+                    TextView numTV = view.findViewById(R.id.dialog_num);
                     if (numTV != null)
-                        numTV.setText(String.valueOf(50 + arg1) + "%");
+                        numTV.setText((50 + arg1) + "%");
                 }
             });
         }
 
-        Button okBtn = (Button) view.findViewById(R.id.dialog_button);
+        Button okBtn = view.findViewById(R.id.dialog_button);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,7 +139,6 @@ public class SliderDialog extends DialogFragment {
             }
         });
 
-        Dialog dialog = builder.create();
-        return dialog;
+        return builder.create();
     }
 }

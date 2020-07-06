@@ -25,7 +25,6 @@ package com.landenlabs.password;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.Button;
 
 import com.landenlabs.all_encrypnotes.R;
 
@@ -33,14 +32,14 @@ import com.landenlabs.all_encrypnotes.R;
  * Wrapper class on Button to make it easier to style password buttons
  * and detect password objects in PasswordGrid layout.
  *
- * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  * @author Dennis Lang v2 9/1/2014
- *         <p>
+ * <p>
  * @author ahmed v1 7/2/2014 <br>
- *         Original version: {@link https ://github.com/asghonim/simple_android_lock_pattern}
- *
+ * Original version: {@link https ://github.com/asghonim/simple_android_lock_pattern}
+ * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  */
-public class PasswordButton extends Button {
+@SuppressWarnings("JavadocReference")
+public class PasswordButton extends androidx.appcompat.widget.AppCompatButton {
 
     public PasswordButton(Context context) {
         super(context);
@@ -48,20 +47,21 @@ public class PasswordButton extends Button {
     }
 
     public PasswordButton(Context context, AttributeSet attrs) {
-		super(context, attrs, R.attr.passwordButtonStyle);
-		init(context, attrs);
-    }
-
-    public PasswordButton(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, ((defStyle == 0) ? R.attr.passwordButtonStyle : defStyle) );
+        super(context, attrs, R.attr.passwordButtonStyle);
         init(context, attrs);
     }
 
+    public PasswordButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, ((defStyle == 0) ? R.attr.passwordButtonStyle : defStyle));
+        init(context, attrs);
+    }
+
+    @SuppressWarnings("unused")
     private void init(Context context, AttributeSet attrs) {
-    	if (!isInEditMode()) {
-	        if (getTag() == null) {
-	            setTag(getText());
-	        }
-    	}   
+        if (!isInEditMode()) {
+            if (getTag() == null) {
+                setTag(getText());
+            }
+        }
     }
 }

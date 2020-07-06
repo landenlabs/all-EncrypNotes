@@ -20,9 +20,8 @@
  *  @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  *
  */
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.code.doc;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +30,9 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.landenlabs.all_encrypnotes.R;
 import com.landenlabs.all_encrypnotes.ui.UiUtil;
 
 import java.io.File;
@@ -50,8 +52,7 @@ public class FileListAdapter extends ArrayAdapter<String> implements View.OnClic
     private final File m_storagePath;
     private final String m_ext;
     private final DateFormat m_dateFormat;
-    private final int m_dialogHeight;
-    
+
     /**
      * File List Adapter - Present list of file names with modify date and file length.
      * 
@@ -66,24 +67,25 @@ public class FileListAdapter extends ArrayAdapter<String> implements View.OnClic
      * @param dialogHeight
      *      Maximum height of dialog. Rows will be expanded to fill space. 
      */
-    public FileListAdapter(Context context, File storagePath, String ext, DateFormat dateFormat, int dialogHeight) {
-        super(context, R.layout.file_list_row, R.id.fl_name, new ArrayList<String>());
+    @SuppressWarnings("SameParameterValue")
+    FileListAdapter(Context context, File storagePath, String ext, DateFormat dateFormat, int dialogHeight) {
+        super(context, R.layout.file_list_row, R.id.fl_name, new ArrayList<>());
         m_storagePath = storagePath;
         m_ext = ext;
         m_dateFormat = dateFormat;
-        m_dialogHeight = dialogHeight;
     }
 
-    AdapterView.OnItemLongClickListener m_onItemLongClickListener;
-    public void setOnItemLongClickListener( AdapterView.OnItemLongClickListener longClickList) {
+    private AdapterView.OnItemLongClickListener m_onItemLongClickListener;
+    void setOnItemLongClickListener(AdapterView.OnItemLongClickListener longClickList) {
         m_onItemLongClickListener = longClickList;
     }
 
-    AdapterView.OnItemClickListener m_onItemClickListener;
-    public void setOnItemClickListener( AdapterView.OnItemClickListener clickList) {
+    private AdapterView.OnItemClickListener m_onItemClickListener;
+    void setOnItemClickListener(AdapterView.OnItemClickListener clickList) {
         m_onItemClickListener = clickList;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void deleteFile(final String filename) {
         int pos = this.getPosition(filename);
 
@@ -114,7 +116,7 @@ public class FileListAdapter extends ArrayAdapter<String> implements View.OnClic
         }
     }
 
-    public File getFile(final String filename) {
+    File getFile(final String filename) {
         File file = null;
         try {
             file = new File(m_storagePath, filename + m_ext);
@@ -125,11 +127,11 @@ public class FileListAdapter extends ArrayAdapter<String> implements View.OnClic
         return file;
     }
 
-    public String getDateStr(final File file) {
+    String getDateStr(final File file) {
         return m_dateFormat.format(file.lastModified());
     }
 
-    public String getInfoStr(final File file) {
+    String getInfoStr(final File file) {
         StringBuilder sb = new StringBuilder();
 
         Doc doc = new Doc();
@@ -141,23 +143,23 @@ public class FileListAdapter extends ArrayAdapter<String> implements View.OnClic
             // Doc Meta not available unless you have password.
             // Doc.DocMetadata docMetaData = doc.getDocMetadata();
             // sb.append(Doc.getInfoStr(docMetaData, m_dateFormat));
-        } catch (Exception ex) {
+        } catch (Exception ignore) {
         }
 
         return sb.toString();
     }
 
-    public void sort() {
+    void sort() {
         super.sort(String.CASE_INSENSITIVE_ORDER);
     }
 
-    @SuppressLint("DefaultLocale")
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewGroup itemView = (ViewGroup) super.getView(position, convertView, parent);
         String item = getItem(position);
 
-        itemView.setTag(Integer.valueOf(position));
+        itemView.setTag(position);
 
         // Once you set onLongClickListener it breaks the default onClick
         // behavior and requires that both click actions get handled via
@@ -200,7 +202,7 @@ public class FileListAdapter extends ArrayAdapter<String> implements View.OnClic
                 doc.doOpen(file, null);
                 hint = doc.getHint();
                 version = doc.getVersion();
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             }
 
             dateTv.setText(m_dateFormat.format(file.lastModified()));
@@ -221,7 +223,7 @@ public class FileListAdapter extends ArrayAdapter<String> implements View.OnClic
     // View.OnClickListener
     @Override
     public void onClick(View view) {
-        int pos = ((Integer)view.getTag()).intValue();
+        int pos = (Integer) view.getTag();
         if (m_onItemClickListener != null)
             m_onItemClickListener.onItemClick(null, view, pos, -1);
 
@@ -230,7 +232,7 @@ public class FileListAdapter extends ArrayAdapter<String> implements View.OnClic
     // View.OLongClickListener
     @Override
     public boolean onLongClick(View view) {
-        int pos = ((Integer)view.getTag()).intValue();
+        int pos = (Integer) view.getTag();
         if (m_onItemLongClickListener != null)
             return m_onItemLongClickListener.onItemLongClick(null, view, pos, -1);
 

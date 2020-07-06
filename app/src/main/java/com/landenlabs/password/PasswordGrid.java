@@ -36,7 +36,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -49,6 +48,8 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.landenlabs.all_encrypnotes.R;
 import com.landenlabs.all_encrypnotes.ui.UiUtil;
 
@@ -58,22 +59,24 @@ import java.util.List;
 
 /**
  * Custom grid view to hold buttons to manage drawing a password pattern.
- * 
+ * <p>
  * Children can be PasswordButton or any other derived TextView object.
  *
- * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  * @author Dennis Lang v2 9/1/2014
- *         <p>
+ * <p>
  * @author ahmed v1 7/2/2014 <br>
- *         Original version: {@link https ://github.com/asghonim/simple_android_lock_pattern}
- * 
- *         Custom attributes drawOff - drawable for off state drawOn - drawable for on state
- *         pathWidth - path width pathAlpha - path alpha pathColor - path color (rotate when
- *         overlapping)
+ * Original version: {@link https ://github.com/asghonim/simple_android_lock_pattern}
+ * <p>
+ * Custom attributes drawOff - drawable for off state drawOn - drawable for on state
+ * pathWidth - path width pathAlpha - path alpha pathColor - path color (rotate when
+ * overlapping)
+ * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  */
+@SuppressWarnings({"FieldCanBeLocal", "JavadocReference"})
 public class PasswordGrid extends GridLayout {
 
     public interface OnPasswordListener {
+        @SuppressWarnings("EmptyMethod")
         void onPasswordComplete(String s);
 
         void onPasswordChanged(String s);
@@ -82,10 +85,10 @@ public class PasswordGrid extends GridLayout {
     private OnPasswordListener mListener;
 
     // -- Path management
-    private final List<Point> m_points = new ArrayList<Point>();
+    private final List<Point> m_points = new ArrayList<>();
     private final StringBuilder m_password = new StringBuilder();
     private final SparseIntArray m_pathMap = new SparseIntArray();
-    private final HashMap<View, Integer> m_buttonCnt = new HashMap<View, Integer>();
+    private final HashMap<View, Integer> m_buttonCnt = new HashMap<>();
 
     private View m_lastView = null;
     private long m_pressMillis = 0;
@@ -102,7 +105,7 @@ public class PasswordGrid extends GridLayout {
 
     // Custom attribute constants
     private static final int STYLE_ATTR = R.attr.passwordGridStyle;
-    private static final int PATH_WIDTH = 20; 
+    private static final int PATH_WIDTH = 20;
     private static final int PATH_ALPHA = 128; // 50% opaque
     private static final int PATH_COLOR = 0xff0000; // Red
 
@@ -113,20 +116,20 @@ public class PasswordGrid extends GridLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-        case MotionEvent.ACTION_DOWN:
-            UiUtil.hideSoftKeyboard(this);
-            startDrag(null, new DragShadowBuilder(this) {
-                @Override
-                public void onDrawShadow(Canvas canvas) {
+            case MotionEvent.ACTION_DOWN:
+                UiUtil.hideSoftKeyboard(this);
+                startDrag(null, new DragShadowBuilder(this) {
+                    @Override
+                    public void onDrawShadow(Canvas canvas) {
+                    }
+                }, 0, 0);
+                break;
+            case MotionEvent.ACTION_UP:
+                View childHit = findChildAt(event.getX(), event.getY());
+                if (childHit != null) {
+                    addPoint(childHit, true);
                 }
-            }, 0, 0);
-            break;
-        case MotionEvent.ACTION_UP:
-            View childHit = findChildAt(event.getX(), event.getY());
-            if (childHit != null) {
-                addPoint(childHit, true);
-            }
-            break;
+                break;
         }
 
         this.requestFocus();    // Take focus so any open soft keyboard disappears.
@@ -137,7 +140,7 @@ public class PasswordGrid extends GridLayout {
     public boolean onDragEvent(DragEvent event) {
 
         if (event.getAction() == DragEvent.ACTION_DRAG_LOCATION
-            || event.getAction() == DragEvent.ACTION_DROP) {
+                || event.getAction() == DragEvent.ACTION_DROP) {
             View childHit = findChildAt(event.getX(), event.getY());
 
             if (childHit != m_lastView && childHit != null) {
@@ -172,7 +175,7 @@ public class PasswordGrid extends GridLayout {
         }
         super.onDraw(canvas);
     }
-    
+
     public PasswordGrid(Context context) {
         super(context);
         init(context, null);
@@ -194,11 +197,11 @@ public class PasswordGrid extends GridLayout {
 
             /*
              * Example how to extract generic attributes such as background
-             * 
+             *
              * TypedArray stdAttrs = context.obtainStyledAttributes(attrs, new int[] {
              * android.R.attr.background }, STYLE_ATTR, R.style.PasswordGridStyle); // Fallback
              * style // android.R.style.Widget_GridView);
-             * 
+             *
              * if (stdAttrs != null) { // stdAttrs has sorted responses, so index must access in
              * alpha order. Drawable bgDrawable = stdAttrs.getDrawable(0); stdAttrs.recycle(); }
              */
@@ -212,18 +215,18 @@ public class PasswordGrid extends GridLayout {
             // pathColor - path color (rotate when overlapping)
             //
             TypedArray styledAttrs = context.obtainStyledAttributes(attrs,
-                    R.styleable.passwordGrid, STYLE_ATTR, R.style.PasswordGridStyle);
+                    R.styleable.PasswordGrid, STYLE_ATTR, R.style.PasswordGridStyle);
 
-            m_offId = styledAttrs.getResourceId(R.styleable.passwordGrid_drawOff,
+            m_offId = styledAttrs.getResourceId(R.styleable.PasswordGrid_drawOff,
                     R.drawable.pattern_off);
-            m_onId = styledAttrs.getResourceId(R.styleable.passwordGrid_drawOn,
+            m_onId = styledAttrs.getResourceId(R.styleable.PasswordGrid_drawOn,
                     R.drawable.pattern_on);
 
             m_onImage = BitmapFactory.decodeResource(getResources(), m_onId);
-            
-            m_pathWidth = styledAttrs.getInt(R.styleable.passwordGrid_pathWidth, PATH_WIDTH);
-            m_pathAlpha = styledAttrs.getInt(R.styleable.passwordGrid_pathAlpha, PATH_ALPHA);
-            m_pathColor = styledAttrs.getColor(R.styleable.passwordGrid_pathColor, PATH_COLOR);
+
+            m_pathWidth = styledAttrs.getInt(R.styleable.PasswordGrid_pathWidth, PATH_WIDTH);
+            m_pathAlpha = styledAttrs.getInt(R.styleable.PasswordGrid_pathAlpha, PATH_ALPHA);
+            m_pathColor = styledAttrs.getColor(R.styleable.PasswordGrid_pathColor, PATH_COLOR);
 
             styledAttrs.recycle();
 
@@ -245,8 +248,8 @@ public class PasswordGrid extends GridLayout {
         return m_password.toString();
     }
 
-    public void setPassword(String newPwd, boolean fireListener) {
-        if (!m_password.equals(newPwd)) {
+    public void setPassword(@NonNull String newPwd, boolean fireListener) {
+        if (!newPwd.equals(m_password.toString())) {
             clear();
             for (char c : newPwd.toCharArray()) {
                 View child = findChildFor("" + c);
@@ -257,7 +260,7 @@ public class PasswordGrid extends GridLayout {
         }
     }
 
-     /**
+    /**
      * Clear password and reset grid buttons to off state.
      */
     public void clear() {
@@ -277,6 +280,7 @@ public class PasswordGrid extends GridLayout {
         invalidate();
     }
 
+    @SuppressWarnings("unused")
     public int size() {
         return m_points.size();
     }
@@ -286,35 +290,33 @@ public class PasswordGrid extends GridLayout {
             return;
 
         if (idx == -1 || idx >= m_points.size()) {
-            idx = m_points.size() -1;
+            idx = m_points.size() - 1;
         }
 
         Point pt = m_points.get(idx);
         View childHit = findChildAt(pt.x, pt.y);
-
-        Integer hitCntObj = m_buttonCnt.get(childHit);
-        if (hitCntObj == null)
+        if (childHit == null) {
             return;
+        }
+        Integer hitCntObj = m_buttonCnt.get(childHit);
+        if (hitCntObj == null) {
+            return;
+        }
 
-        int hitCnt = hitCntObj.intValue() -1;
+        int hitCnt = hitCntObj - 1;
         m_buttonCnt.put(childHit, hitCnt);
         if (hitCnt > 0) {
-            Bitmap rotImage = rotateImage(m_onImage, (hitCnt-1) * 30);
+            Bitmap rotImage = rotateImage(m_onImage, (hitCnt - 1) * 30);
             Drawable rotDraw = new BitmapDrawable(getResources(), rotImage);
 
-            if (Build.VERSION.SDK_INT < 16) {
-                //noinspection deprecation,deprecation
-                childHit.setBackgroundDrawable(new BitmapDrawable(rotImage));
-            } else {
-                childHit.setBackground(rotDraw);
-            }
+            childHit.setBackground(rotDraw);
         } else {
             childHit.setBackgroundResource(m_offId);
         }
 
 
         m_points.remove(idx);
-        m_password.delete(idx, idx+1);
+        m_password.delete(idx, idx + 1);
         invalidate();
 
         if (mListener != null) {
@@ -325,35 +327,28 @@ public class PasswordGrid extends GridLayout {
         if (idx <= 0) {
             m_lastView = null;
         } else {
-            pt = m_points.get(idx-1);
+            pt = m_points.get(idx - 1);
             m_lastView = findChildAt(pt.x, pt.y);
         }
     }
 
     /**
      * Add button child to sequence of password presses.
-     * 
-     * @param childHit
      */
-    public void addPoint(View childHit, boolean fireListener) {
+    private void addPoint(View childHit, boolean fireListener) {
 
         Integer hitCntObj = m_buttonCnt.get(childHit);
-        int hitCnt = (hitCntObj==null) ? 0 : hitCntObj.intValue();
+        int hitCnt = (hitCntObj == null) ? 0 : hitCntObj;
         m_buttonCnt.put(childHit, hitCnt + 1);
         if (hitCnt > 0) {
             Bitmap rotImage = rotateImage(m_onImage, hitCnt * 30);
             Drawable rotDraw = new BitmapDrawable(getResources(), rotImage);
 
-            if (Build.VERSION.SDK_INT < 16) {
-                //noinspection deprecation,deprecation
-                childHit.setBackgroundDrawable(new BitmapDrawable(rotImage));
-            } else {
-                childHit.setBackground(rotDraw);
-            }
+            childHit.setBackground(rotDraw);
         } else {
             childHit.setBackgroundResource(m_onId);
         }
-        
+
         m_pressMillis = SystemClock.uptimeMillis();
         m_lastView = childHit;
         Point cenPt = new Point((int) childHit.getX(), (int) childHit.getY());
@@ -371,8 +366,6 @@ public class PasswordGrid extends GridLayout {
 
     /**
      * Set Password listener callback.
-     * 
-     * @param listener
      */
     public void setListener(OnPasswordListener listener) {
         mListener = listener;
@@ -380,12 +373,10 @@ public class PasswordGrid extends GridLayout {
 
     /**
      * Custom paint action to draw connecting path between layout buttons.
-     * 
-     * @param canvas
      */
     private void paintPath(Canvas canvas) {
         int prevCnt = 1;
-        
+
         m_path.reset();
         m_paint.setStrokeWidth(m_pathWidth);
         m_paint.setColor(m_pathColor);
@@ -404,8 +395,8 @@ public class PasswordGrid extends GridLayout {
             if (idx != 0) {
                 // Count paths using (from,to) password values as key.
                 int pos = Math.min(prevPwd, pwd) * 100 + Math.max(prevPwd, pwd);
-                Integer value = m_pathMap.get(pos);
-                cnt = 1 + ((value == null) ? 0 : value);
+                int value = m_pathMap.get(pos);
+                cnt = 1 + value;
                 m_pathMap.put(pos, cnt);
             }
             prevPwd = pwd;
@@ -442,21 +433,21 @@ public class PasswordGrid extends GridLayout {
             prevPnt = point;
         }
 
-        canvas.drawPath(m_path, m_paint); 
+        canvas.drawPath(m_path, m_paint);
     }
 
     /**
      * Get password value of child object. Child must be a PasswordButton or an instanceOf TextView.
      * Result returned is first of: Tag (if instance of String and not empty) Text if not empty
      * Position of child in gridlayout.
-     * 
-     * @param childView
+     *
      * @return Result string extracted from child view object.
      */
     private String getPasswordText(View childView) {
         String result = null;
         boolean isPwdView = childView instanceof PasswordButton;
 
+        //noinspection ConstantConditions
         if (!isPwdView || childView instanceof TextView) {
             result = (String) childView.getTag();
             if (TextUtils.isEmpty(result))
@@ -475,8 +466,7 @@ public class PasswordGrid extends GridLayout {
 
     /**
      * Determine if child view object is part of password pattern.
-     * 
-     * @param childView
+     *
      * @return true if password child.
      */
     private boolean isPasswordView(View childView) {
@@ -485,12 +475,9 @@ public class PasswordGrid extends GridLayout {
 
     /**
      * Find child which hits position.
-     * 
-     * @param xRP
-     *            x Relative to parent
-     * @param yRP
-     *            y Relative to parent
-     * @return
+     *
+     * @param xRP x Relative to parent
+     * @param yRP y Relative to parent
      */
     private View findChildAt(float xRP, float yRP) {
         Rect rectRP = new Rect();
@@ -509,8 +496,8 @@ public class PasswordGrid extends GridLayout {
     private View findChildFor(String str) {
         for (int idx = 0; idx < getChildCount(); idx++) {
             View childView = getChildAt(idx);
-            if (childView instanceof  TextView) {
-                TextView textView = (TextView)childView;
+            if (childView instanceof TextView) {
+                TextView textView = (TextView) childView;
                 if (textView.getText().toString().equals(str))
                     return childView;
             }
@@ -521,11 +508,9 @@ public class PasswordGrid extends GridLayout {
 
     /**
      * Helper to rotate Red/Green/Blue color values
-     * 
-     * @param cnt
-     *            Rotation count, 0=no rotation
-     * @param inColor
-     *            Input color
+     *
+     * @param cnt     Rotation count, 0=no rotation
+     * @param inColor Input color
      * @return Output color generate by swapping R/G/B
      */
     private static int rotateColor(int cnt, int inColor) {

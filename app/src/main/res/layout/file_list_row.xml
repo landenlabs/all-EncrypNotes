@@ -3,6 +3,7 @@
 <!-- not short clickable -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp">
@@ -12,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:text="name"
+        android:text="@string/file_list_name"
         android:textSize="@dimen/Normal20" />
 
     <TextView
@@ -20,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:text="hint"
+        android:text="@string/file_list_hint"
         android:textColor="#800000"
         android:textSize="@dimen/Normal20"
         android:textStyle="italic" />
@@ -31,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/fl_name"
         android:layout_alignParentLeft="true"
-        android:text="mm/dd/yy hh:mm"
+        android:text="@string/file_list_mm_dd_yy_hh_mm"
         android:textColor="#0000FF" />
 
     <TextView
@@ -40,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/fl_name"
         android:gravity="center"
-        android:text="v1.2"
+        tools:text="v1.2"
         android:textColor="#000000" />
 
     <TextView
@@ -49,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/fl_name"
         android:layout_alignParentRight="true"
-        android:text="123,456"
+        tools:text="123,456"
         android:textColor="#0000FF" />
 
 </RelativeLayout>

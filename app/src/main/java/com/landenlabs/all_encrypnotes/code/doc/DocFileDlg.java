@@ -21,7 +21,7 @@
  *
  */
 
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.code.doc;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -33,7 +33,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -46,6 +45,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
+import androidx.core.content.ContextCompat;
+
+import com.landenlabs.all_encrypnotes.R;
+import com.landenlabs.all_encrypnotes.code.EncrypPrefs;
+import com.landenlabs.all_encrypnotes.code.SendMsg;
+import com.landenlabs.all_encrypnotes.code.Util;
+import com.landenlabs.all_encrypnotes.code.pwd.UiPasswordManager;
 import com.landenlabs.all_encrypnotes.ui.RenameDialog;
 import com.landenlabs.all_encrypnotes.ui.UiUtil;
 import com.landenlabs.all_encrypnotes.ui.WebDialog;
@@ -64,15 +70,18 @@ import java.text.DateFormat;
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  *
  */
+@SuppressWarnings({"UnnecessaryLocalVariable", "Convert2Lambda", "SameParameterValue", "ResultOfMethodCallIgnored", "unused"})
 public class DocFileDlg {
     
     // --Static constants
-    public  static final int FILE_CONTEXT_MENU = 1;
-    
-    private static final String DOC_DIR = "documents/encrypnotes";
+    public  static final String DOC_DIR = "encrypnotes";
     private static final String DOC_EXT = ".etxt";
+    public static final String MIME_TYPE = "application/etxt";
     private static final DateFormat m_dateFormat = DateFormat.getDateInstance();
-    private static final File STORAGE_DIR = new File(Environment.getExternalStorageDirectory(), DOC_DIR);
+    private static       File STORAGE_DIR;   // new File(Environment.getExternalStorageDirectory(), DOC_DIR);
+
+    private static final String GoogleDriveClientID = "814289292845-4iouldk9rap52hmvo9r6mglf8k45kpgd.apps.googleusercontent.com";
+    private static final String GoogleDriveClientSecret = "o1Qab4plYKd1I8Pb6KxhvRv1";
 
     private Doc.DocMetadata m_docMetadata = new Doc.DocMetadata();
     
@@ -91,11 +100,28 @@ public class DocFileDlg {
      */
     public DocFileDlg(Activity context) {
         m_context = context;
+        try {
+            // STORAGE_DIR = new File(Environment.getExternalStorageDirectory(), DOC_DIR);
+            // STORAGE_DIR.mkdir();
+            // STORAGE_DIR = Environment.getExternalStoragePublicDirectory(DOC_DIR /* Environment.DIRECTORY_DOCUMENTS */);
+            if (STORAGE_DIR == null) {
+                // Make sure it's available
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    // We can read and write the media
+                    STORAGE_DIR = context.getExternalFilesDir(null  /* Environment.DIRECTORY_DOCUMENTS */);
+                } else {
+                    // Load another directory, probably local memory
+                    STORAGE_DIR = context.getFilesDir();
+                }
+            }
+        } catch (Exception ex) {
+            STORAGE_DIR = context.getFilesDir();
+        }
     }
     
     /**
      * Ensure storage directory exists, make if needed.
-     * @return
      */
     public boolean ensureDocDir() {
         // PermissionChecker.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -103,7 +129,9 @@ public class DocFileDlg {
 
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             // OK permission granted, let's do stuff
-            return (STORAGE_DIR.isDirectory() || STORAGE_DIR.mkdirs());
+            boolean isDir = STORAGE_DIR.isDirectory();
+            boolean madeDir = !isDir && STORAGE_DIR.mkdirs();
+            return (isDir || madeDir);
         }
 
         // Need to ask for permission
@@ -140,7 +168,6 @@ public class DocFileDlg {
     
     /**
      * Set new modified state, marking if document needs to be saved.
-     * @param newModified
      */
     public void setModified(boolean newModified) {
         m_docMetadata.modified = newModified;
@@ -163,8 +190,6 @@ public class DocFileDlg {
     
     /**
      * Save docMetaData plus document text (via passed in EditText object).
-     * @param b
-     * @param docText
      */
     public void saveInstanceState(Bundle b, EditText docText) {
         m_docMetadata.caretPosition = docText.getSelectionStart();
@@ -174,9 +199,6 @@ public class DocFileDlg {
     
     /**
      * Restore saved docMetaData and text object. 
-     * 
-     * @param b
-     * @param docText
      */
     public void restoreInstanceState(Bundle b, EditText docText) {
         m_docMetadata = (Doc.DocMetadata) b.getSerializable("metadata");
@@ -210,7 +232,7 @@ public class DocFileDlg {
         });
 
         if (file_list == null || file_list.length == 0) {
-            YesNoDialog.showOk(m_context, m_context.getResources().getString(R.string.no_etxt_files, DOC_EXT, DOC_DIR));
+            YesNoDialog.showOk(m_context, m_context.getResources().getString(R.string.no_etxt_files, DOC_EXT, STORAGE_DIR));
             return;
         }
 
@@ -220,7 +242,7 @@ public class DocFileDlg {
 
         AlertDialog.Builder builder = new AlertDialog.Builder( 
                 new ContextThemeWrapper(m_context, R.style.FileListDialogStyle));
-        builder.setTitle(m_context.getResources().getString(R.string.list_etxt_files, DOC_EXT, DOC_DIR));
+        builder.setTitle(m_context.getResources().getString(R.string.list_etxt_files, DOC_EXT, STORAGE_DIR));
         final FileListAdapter fileListAdapter = new FileListAdapter(m_context, STORAGE_DIR, DOC_EXT,
                 m_dateFormat, m_context.getWindow().getDecorView().getHeight());
 
@@ -243,6 +265,7 @@ public class DocFileDlg {
         final AlertDialog alert = builder.create();
 
         fileListAdapter.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @SuppressWarnings("unused")
             public boolean onItemLongClick(AdapterView<?> arg0, View view, int pos, long id) {
                 final String filename = fileListAdapter.getItem(pos);
                 final View adapterView = arg0;
@@ -306,11 +329,6 @@ public class DocFileDlg {
      * Ask for password to load and decrypt file.
      * 
      * Process is asynchronous, see SendMsg for indication of success/failure.
-     * 
-     * @param prefs
-     * @param fname
-     * @param docText
-     * @param sendMsg
      */
     private void loadSelectedFile(final EncrypPrefs prefs, final String fname, final EditText docText, final SendMsg sendMsg) {
         final Dialog dlg = new Dialog(new ContextThemeWrapper(m_context, R.style.OpenDialogStyle));
@@ -321,7 +339,7 @@ public class DocFileDlg {
         // File file = new File(m_fileDir, fname);
         // TODO - set dialog title to show date of last save, file size, etc.
 
-        final EditText filenameETxt = (EditText) dlg.findViewById(R.id.open_filename);
+        final EditText filenameETxt =  dlg.findViewById(R.id.open_filename);
         filenameETxt.setText(fname);
         filenameETxt.setOnFocusChangeListener(new OnFocusChangeListener() {
             
@@ -335,7 +353,7 @@ public class DocFileDlg {
         m_managePwd = new UiPasswordManager(prefs, dlg, true);
         setHint(fname);
 
-        Button btn_browse = (Button) dlg.findViewById(R.id.file_browser);
+        Button btn_browse = dlg.findViewById(R.id.file_browser);
         btn_browse.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -356,11 +374,11 @@ public class DocFileDlg {
             }
         });
 
-        Button btn_ok = (Button) dlg.findViewById(R.id.okBtn);
+        Button btn_ok =  dlg.findViewById(R.id.okBtn);
         btn_ok.setOnClickListener(new Button.OnClickListener() {
             @SuppressLint("DefaultLocale")
             public void onClick(View v) {
-                EditText pwdText = (EditText) dlg.findViewById(R.id.pwd);
+                EditText pwdText = dlg.findViewById(R.id.pwd);
                 String pwd = pwdText.getText().toString();
                 String filename = filenameETxt.getText().toString().trim();
                 File file = new File(STORAGE_DIR, filename + DOC_EXT);
@@ -409,10 +427,6 @@ public class DocFileDlg {
      *            file to load from storage (no path and no extension)
      * @param pwd
      *            password to decrypt file
-     * @throws java.io.FileNotFoundException
-     * @throws Doc.DocPasswordException
-     * @throws java.io.IOException
-     * @throws Doc.DocException
      */
     private void loadFile(final String fname, String pwd, final EditText docText, final SendMsg sendMsg) 
             throws IOException, Doc.DocException {
@@ -421,8 +435,9 @@ public class DocFileDlg {
 
         Doc.DocMetadata docMetadata = doc.getDocMetadata();
         docMetadata.copyTo(m_docMetadata);
+        //noinspection UnusedAssignment
         docMetadata = null;
-        
+
         // Set state before docText, because docText has 'textChanged' listener
         // to update the Title bar.
         m_docMetadata.modified = false;  
@@ -436,10 +451,9 @@ public class DocFileDlg {
 
     /**
      * Get Hint string from document.
-     * @param filename
      * @return Hint string or ""
      */
-    String getHint(final String filename) {
+    private String getHint(final String filename) {
         Doc doc = new Doc();
         try {
             doc.doOpen(new File(STORAGE_DIR, filename + DOC_EXT), null);
@@ -568,12 +582,12 @@ public class DocFileDlg {
         dlg.show();
     }
     
-    public void setFilename(final EditText editText, final String filename) {
+    private void setFilename(final EditText editText, final String filename) {
         editText.setText(filename.replaceAll(".*/", "").replace(DOC_EXT, ""));
         setFilenameColor(editText);
     }
 
-    public  void setFilenameColor(final EditText editText) {
+    private void setFilenameColor(final EditText editText) {
         File file = new File(STORAGE_DIR, editText.getText().toString() + DOC_EXT);
         editText.setTextColor(file.exists() ? Color.RED : Color.BLACK);
     }
@@ -625,8 +639,9 @@ public class DocFileDlg {
 
         File saveToFile = new File(STORAGE_DIR, filename);
 
-        if (saveToFile.exists())
+        if (saveToFile.exists()) {
             saveToFile.delete();
+        }
 
         try {
             doc.doSave(saveToFile, hint);
@@ -636,10 +651,10 @@ public class DocFileDlg {
                     + e.getMessage());
             sendMsg.send(SendMsg.MSG_FAIL);
             return false;
-        } catch (Doc.DocException e) {
-            e.printStackTrace();
-            YesNoDialog.showOk(m_context, e.toString() + " saving \"" + saveToFile.getAbsolutePath() + "\": "
-                    + e.getMessage());
+        } catch (Doc.DocException ex) {
+            ex.printStackTrace();
+            YesNoDialog.showOk(m_context, ex.toString() + " saving \"" + saveToFile.getAbsolutePath() + "\": "
+                    + ex.getMessage());
             sendMsg.send(SendMsg.MSG_FAIL);
             return false;
         }
@@ -649,6 +664,7 @@ public class DocFileDlg {
         return true;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public boolean saveOnBackground(String filename, String pwd, String hint, EditText docText) {
         boolean saved = false;
 
@@ -670,7 +686,7 @@ public class DocFileDlg {
                 doc.doSave(saveToFile, hint);
                 m_docMetadata.modified = false;
                 saved = true;
-            } catch (Exception ex) {
+            } catch (Exception ignore) {
             }
         }
 

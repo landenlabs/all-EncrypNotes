@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textSize="20sp"
-        android:text="Font Scale" />
+        android:text="@string/font_zoom_font_scale" />
 
     <SeekBar
         android:id="@+id/dialog_seekbar"

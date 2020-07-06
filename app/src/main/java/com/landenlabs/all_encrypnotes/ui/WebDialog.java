@@ -43,9 +43,11 @@ import static com.landenlabs.all_encrypnotes.ui.YesNoDialog.BTN_YES_NO;
  * @author Dennis Lang
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  */
+@SuppressWarnings("Convert2Lambda")
 public class WebDialog {
-    public static String HTML_CENTER_BOX = "<div style='min-height:128px;'><table height='100%%' width='100%%'><tr valign='middle'><td style='border: 2px solid; border-radius: 25px;'><center>%s</center></table></div>";
+    public static final String HTML_CENTER_BOX = "<div style='min-height:128px;'><table height='100%%' width='100%%'><tr valign='middle'><td style='border: 2px solid; border-radius: 25px;'><center>%s</center></table></div>";
     
+    @SuppressWarnings("UnusedReturnValue")
     public static AlertDialog show(final Context activity, String ... htmlStr) {
         AlertDialog.Builder builder = getBuilder(activity, htmlStr);
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
@@ -59,6 +61,7 @@ public class WebDialog {
         return dialog;
     }
 
+    @SuppressWarnings("unused")
     public static AlertDialog show(final Context activity, final int msgNum, int buttons, String ... htmlStr) {
         AlertDialog.Builder builder = getBuilder(activity, htmlStr);
 
@@ -86,7 +89,7 @@ public class WebDialog {
         return dialog;
     }
 
-    public static AlertDialog.Builder getBuilder(final Context activity, String ... htmlStr) {
+    private static AlertDialog.Builder getBuilder(final Context activity, String... htmlStr) {
         String fullHtmlStr = htmlStr[0];
         if (htmlStr.length > 1) {
             String fmt = htmlStr[0];

@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/round_border"
             android:nextFocusDown="@id/pwd"
-            android:hint="open filename"
+            android:hint="@string/open_dlg_hint_filename"
             android:imeOptions="actionNext"
             android:inputType="text"
             android:padding="4dp" />

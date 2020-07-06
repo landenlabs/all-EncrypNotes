@@ -36,6 +36,8 @@ import android.widget.TextView;
 
 import com.landenlabs.all_encrypnotes.R;
 
+import java.util.Objects;
+
 /**
  * Simple  yes/no or ok dialog.
  * Sends +msgNun on yes/ok or -msgNun on no.
@@ -43,37 +45,33 @@ import com.landenlabs.all_encrypnotes.R;
  * @author Dennis Lang
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  */
+@SuppressWarnings({"UnusedReturnValue", "Convert2Lambda"})
 public class YesNoDialog extends DialogFragment {
     
-    public static final int MSG_NONE = 0;
+    private static final int MSG_NONE = 0;
 
     // Save and Restore keys
-    static final String STATE_TITLE = "Title";
-    static final String STATE_MSGSTR = "MsgStr";
-    static final String STATE_MSGNUM = "MsgNum";
-    static final String STATE_BUTTONS = "Buttons";
+    private static final String STATE_TITLE = "Title";
+    private static final String STATE_MSGSTR = "MsgStr";
+    private static final String STATE_MSGNUM = "MsgNum";
+    private static final String STATE_BUTTONS = "Buttons";
 
     // Operating modes
     public static final int BTN_YES_NO = 0;
     public static final int BTN_OK = 1;
 
-    String m_title;
-    String m_message;
-    int m_msgNum;
-    int m_buttons;
-    AlertDialog mDialog;
+    private String m_title;
+    private String m_message;
+    private int m_msgNum = 0;
+    private int m_buttons = BTN_YES_NO;
+    private AlertDialog mDialog;
 
     // Required callback used on button clicks
-    DlgClickListener m_clickListener;
+    private DlgClickListener m_clickListener;
 
     // Caller values storage.
-    Object m_value;
-    Object m_view;
-
-    public YesNoDialog() {
-        m_msgNum = 0;
-        m_buttons = BTN_YES_NO;
-    }
+    private Object m_value;
+    private Object m_view;
 
     public static YesNoDialog create(String title, String message, int msgNum, int buttons) {
         YesNoDialog yesNoDialog = new YesNoDialog();
@@ -86,8 +84,6 @@ public class YesNoDialog extends DialogFragment {
 
     /**
      * Show a simple message dialog
-     * 
-     * @param msg
      */
     public static void showOk(Activity activity, String msg) {
         showDialog(activity, "", msg, MSG_NONE, YesNoDialog.BTN_OK);
@@ -157,7 +153,7 @@ public class YesNoDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View customView = getActivity().getLayoutInflater().inflate(R.layout.yes_no_dlg, null);
         builder.setView(customView);
-        TextView msgTv = (TextView)customView.findViewById(R.id.yes_no_msg);
+        TextView msgTv = customView.findViewById(R.id.yes_no_msg);
         msgTv.setText(m_message);
         builder.setTitle(m_title)
                 .setPositiveButton(posBtn, new OnClickListener() {
@@ -183,6 +179,6 @@ public class YesNoDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        mDialog.getWindow().setLayout(600, 400);
+        Objects.requireNonNull(mDialog.getWindow()).setLayout(600, 400);
     }
 }

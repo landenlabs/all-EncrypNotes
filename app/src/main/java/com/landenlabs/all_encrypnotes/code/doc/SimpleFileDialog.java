@@ -21,35 +21,35 @@
  *
  */
 
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.code.doc;
 /*
-*
-* http://www.scorchworks.com/Blog/simple-file-dialog-for-android-applications/
-*
-* This file is licensed under The Code Project Open License (CPOL) 1.02
-* http://www.codeproject.com/info/cpol10.aspx
-* http://www.codeproject.com/info/CPOL.zip
-*
-* License Preamble:
-* This License governs Your use of the Work. This License is intended to allow developers to use the Source
-* Code and Executable Files provided as part of the Work in any application in any form.
-*
-* The main points subject to the terms of the License are:
-*    Source Code and Executable Files can be used in commercial applications;
-*    Source Code and Executable Files can be redistributed; and
-*    Source Code can be modified to create derivative works.
-*    No claim of suitability, guarantee, or any warranty whatsoever is provided. The software is provided "as-is".
-*    The Article(s) accompanying the Work may not be distributed or republished without the Author's consent
-*
-* This License is entered between You, the individual or other entity reading or otherwise making use of
-* the Work licensed pursuant to this License and the individual or other entity which offers the Work
-* under the terms of this License ("Author").
-*  (See Links above for full license text)
-*
-*
-*   @author Dennis Lang (modified original work)
-*   @see <a href="http://landenlabs.com">http://landenlabs.com</a>
-*/
+ *
+ * http://www.scorchworks.com/Blog/simple-file-dialog-for-android-applications/
+ *
+ * This file is licensed under The Code Project Open License (CPOL) 1.02
+ * http://www.codeproject.com/info/cpol10.aspx
+ * http://www.codeproject.com/info/CPOL.zip
+ *
+ * License Preamble:
+ * This License governs Your use of the Work. This License is intended to allow developers to use the Source
+ * Code and Executable Files provided as part of the Work in any application in any form.
+ *
+ * The main points subject to the terms of the License are:
+ *    Source Code and Executable Files can be used in commercial applications;
+ *    Source Code and Executable Files can be redistributed; and
+ *    Source Code can be modified to create derivative works.
+ *    No claim of suitability, guarantee, or any warranty whatsoever is provided. The software is provided "as-is".
+ *    The Article(s) accompanying the Work may not be distributed or republished without the Author's consent
+ *
+ * This License is entered between You, the individual or other entity reading or otherwise making use of
+ * the Work licensed pursuant to this License and the individual or other entity which offers the Work
+ * under the terms of this License ("Author").
+ *  (See Links above for full license text)
+ *
+ *
+ *   @author Dennis Lang (modified original work)
+ *   @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ */
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -70,6 +70,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.landenlabs.all_encrypnotes.R;
 import com.landenlabs.all_encrypnotes.ui.UiUtil;
 
 import java.io.File;
@@ -79,27 +80,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SimpleFileDialog {
+@SuppressWarnings({"FieldCanBeLocal", "Convert2Lambda"})
+class SimpleFileDialog {
 
     // Default file or directory.
-    public String DefaultFileName = "default.txt";
+    String DefaultFileName = "default.txt";
 
-    public boolean ShowDirs = false;
-    public String DirPattern = ".+";
+    private boolean ShowDirs = false;
+    private final String DirPattern = ".+";
 
-    public boolean ShowFiles = true;
-    public String FilePattern = ".+";   // .+\..+
-    
-    public boolean ShowExt = false;
-    public DateFormat DateFmt = DateFormat.getDateInstance();
-    
-    private int FileOpen = 0;
-    private int FileSave = 1;
-    private int FolderChoose = 2;
+    private boolean ShowFiles = true;
+    String FilePattern = ".+";   // .+\..+
+
+    private final boolean ShowExt = false;
+    private final DateFormat DateFmt = DateFormat.getDateInstance();
+
+    private final int FileOpen = 0;
+    private final int FileSave = 1;
+    private final int FolderChoose = 2;
 
     private int m_selectType = FileSave;
     private String m_sdcardDirectory = "";
-    private Context m_context;
+    private final Context m_context;
     private TextView m_titleView1;
     private TextView m_titleView;
 
@@ -111,17 +113,17 @@ public class SimpleFileDialog {
     private List<String> m_subdirs = null;
     private SimpleFileDialogListener m_simpleFileDialogListener = null;
     private ArrayAdapter<String> m_listAdapter = null;
-    private int m_dialogHeight;
-    
+    private final int m_dialogHeight;
+
     // Callback interface for selected directory
     public interface SimpleFileDialogListener {
         void onChosenDir(String chosenDir);
     }
 
     // Constructor for File/Dir selection dialog.
-    public SimpleFileDialog(Context context, String file_select_type, int dialogHeight,
-    		SimpleFileDialogListener SimpleFileDialogListener) {
-    	
+    SimpleFileDialog(Context context, String file_select_type, int dialogHeight,
+                     SimpleFileDialogListener SimpleFileDialogListener) {
+
         m_dialogHeight = dialogHeight;
         if (file_select_type.equals("FolderChoose")) {
             m_selectType = FolderChoose;
@@ -131,7 +133,7 @@ public class SimpleFileDialog {
             m_selectType = FileSave;
             ShowFiles = true;
             ShowDirs = false;
-        }  else {     //  "FileOpen"
+        } else {     //  "FileOpen"
             m_selectType = FileOpen;
             ShowFiles = true;
             ShowDirs = false;
@@ -145,11 +147,10 @@ public class SimpleFileDialog {
     /**
      * Open (show) file or directory selection dialog.
      *
-     * @param dir
-     *          Starting directory
-     *          If null or empty start on SD card directory.
+     * @param dir Starting directory
+     *            If null or empty start on SD card directory.
      */
-    public void choose(String dir) {
+    void choose(String dir) {
         if (dir == null || dir.isEmpty())
             dir = m_sdcardDirectory;
 
@@ -171,7 +172,7 @@ public class SimpleFileDialog {
                 String orgDir = m_dir;
                 String sel = "" + ((AlertDialog) dialog).getListView().getAdapter().getItem(itemIdx);
                 if (sel.charAt(0) == '/')
-                    sel = sel.substring(1, sel.length());
+                    sel = sel.substring(1);
 
                 // Navigate into the sub-directory
                 if (sel.equals("..")) {
@@ -228,13 +229,11 @@ public class SimpleFileDialog {
      * Get Directory List (optionally subDir and/or files)
      * See ShowFiles, FilePattern, ShowDir, DirPattern
      *
-     * @param dir
-     *          Start directory scan at 'dir'
-     * @return
-     *          List of directory entries (files and/or directories)
+     * @param dir Start directory scan at 'dir'
+     * @return List of directory entries (files and/or directories)
      */
     private List<String> getDirList(String dir) {
-        List<String> dirs = new ArrayList<String>();
+        List<String> dirs = new ArrayList<>();
         try {
             File dirFile = new File(dir);
 
@@ -255,7 +254,7 @@ public class SimpleFileDialog {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception ignore) {
         }
 
         Collections.sort(dirs, String.CASE_INSENSITIVE_ORDER);
@@ -265,13 +264,13 @@ public class SimpleFileDialog {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////                                   START DIALOG DEFINITION                                    //////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
-    static final int DARK_GRAY = 0xff444444;
-    
+    private static final int DARK_GRAY = 0xff444444;
+
     private AlertDialog.Builder createDirectoryChooserDialog(
-    		String title, List<String> listItems, OnClickListener onClickListener) {
-    	
+            String title, List<String> listItems, OnClickListener onClickListener) {
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(m_context);
-        
+
         // Create title text showing file select type //
         m_titleView1 = new TextView(m_context);
         m_titleView1.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -288,7 +287,6 @@ public class SimpleFileDialog {
         // Need to make this a variable Save as, Open, Select Directory
         m_titleView1.setGravity(Gravity.CENTER_VERTICAL);
         m_titleView1.setBackgroundColor(DARK_GRAY);
-        //noinspection deprecation
         m_titleView1.setTextColor(m_context.getResources().getColor(android.R.color.white));
 
         // Create custom view for AlertDialog title
@@ -297,36 +295,36 @@ public class SimpleFileDialog {
         titleLayout1.addView(m_titleView1);
 
         if (ShowDirs && (m_selectType == FolderChoose || m_selectType == FileSave)) {
-        	
+
             // ----Create New Folder Button   
             Button newDirButton = new Button(m_context);
             newDirButton.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             newDirButton.setText("New Folder");
             newDirButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final EditText input = new EditText(m_context);
+                                                @Override
+                                                public void onClick(View v) {
+                                                    final EditText input = new EditText(m_context);
 
-                        // Show new folder name input dialog
-                        new AlertDialog.Builder(m_context).
-                                setTitle("New Folder Name").
-                                setView(input).setPositiveButton("OK", new OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                Editable newDir = input.getText();
-                                String newDirName = newDir.toString();
-                                // Create new directory
-                                if (createSubDir(m_dir + "/" + newDirName)) {
-                                    // Navigate into the new directory
-                                    m_dir += "/" + newDirName;
-                                    updateDirectory();
-                                } else {
-                                    Toast.makeText(m_context, "Failed to create '"
-                                            + newDirName + "' folder", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }).setNegativeButton("Cancel", null).show();
-                    }
-                }
+                                                    // Show new folder name input dialog
+                                                    new AlertDialog.Builder(m_context).
+                                                            setTitle("New Folder Name").
+                                                            setView(input).setPositiveButton("OK", new OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                                            Editable newDir = input.getText();
+                                                            String newDirName = newDir.toString();
+                                                            // Create new directory
+                                                            if (createSubDir(m_dir + "/" + newDirName)) {
+                                                                // Navigate into the new directory
+                                                                m_dir += "/" + newDirName;
+                                                                updateDirectory();
+                                                            } else {
+                                                                Toast.makeText(m_context, "Failed to create '"
+                                                                        + newDirName + "' folder", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    }).setNegativeButton("Cancel", null).show();
+                                                }
+                                            }
             );
             titleLayout1.addView(newDirButton);
         }
@@ -338,7 +336,6 @@ public class SimpleFileDialog {
         m_titleView = new TextView(m_context);
         m_titleView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         m_titleView.setBackgroundColor(DARK_GRAY);
-        //noinspection deprecation
         m_titleView.setTextColor(m_context.getResources().getColor(android.R.color.white));
         m_titleView.setGravity(Gravity.CENTER_VERTICAL);
         m_titleView.setText(title);
@@ -350,7 +347,7 @@ public class SimpleFileDialog {
             m_inputText.setText(DefaultFileName.replaceAll(".*/", ""));
             titleLayout.addView(m_inputText);
         }
-        
+
         // ---- Set Views and Finish Dialog builder   
         dialogBuilder.setView(titleLayout);
         dialogBuilder.setCustomTitle(titleLayout1);
@@ -378,14 +375,14 @@ public class SimpleFileDialog {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View itemView = super.getView(position, convertView, parent);
                 String item = getItem(position);
-                
-                int rowHeight = m_dialogHeight / (this.getCount()+2);
+
+                int rowHeight = m_dialogHeight / (this.getCount() + 2);
                 if (itemView.getHeight() < rowHeight) {
                     AbsListView.LayoutParams params = (AbsListView.LayoutParams) itemView.getLayoutParams();
-                    params.height = Math.min(params.height*2, rowHeight);
+                    params.height = Math.min(params.height * 2, rowHeight);
                     itemView.setLayoutParams(params);
                 }
-                
+
                 File file = new File(m_dir, item);
 
                 TextView nameTv = UiUtil.viewById(itemView, R.id.fl_name);
@@ -393,10 +390,10 @@ public class SimpleFileDialog {
                 TextView sizeTv = UiUtil.viewById(itemView, R.id.fl_size);
                 TextView hintTv = UiUtil.viewById(itemView, R.id.fl_hint);
                 TextView vernTv = UiUtil.viewById(itemView, R.id.fl_version);
-                
+
                 if (!ShowExt)
                     nameTv.setText(item.replaceAll("\\..*", ""));
-                
+
                 if (file.exists()) {
                     // Get Hint and version.
                     String hint = "";
@@ -406,7 +403,7 @@ public class SimpleFileDialog {
                         doc.doOpen(file, null);
                         hint = doc.getHint();
                         version = doc.getVersion();
-                    } catch (Exception ex) {
+                    } catch (Exception ignore) {
                     }
 
                     dateTv.setText(DateFmt.format(file.lastModified()));
@@ -419,7 +416,7 @@ public class SimpleFileDialog {
                     vernTv.setText("");
                     hintTv.setText("");
                 }
-                
+
                 return itemView;
             }
         };

@@ -21,7 +21,7 @@
  *
  */
 
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.code.pwd;
 
 import android.app.Dialog;
 import android.text.Editable;
@@ -38,6 +38,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.landenlabs.all_encrypnotes.R;
+import com.landenlabs.all_encrypnotes.code.EncrypPrefs;
 import com.landenlabs.all_encrypnotes.ui.UiUtil;
 import com.landenlabs.password.PasswordGrid;
 import com.landenlabs.password.PasswordGrid.OnPasswordListener;
@@ -50,7 +52,8 @@ import com.landenlabs.password.PasswordGrid.OnPasswordListener;
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  * 
  */
-class UiPasswordManager
+@SuppressWarnings("FieldCanBeLocal")
+public class UiPasswordManager
         implements OnFocusChangeListener
         , TextView.OnEditorActionListener
         , TextWatcher
@@ -124,7 +127,7 @@ class UiPasswordManager
         // m_pwdVerify.setOnEditorActionListener(this);
         // m_pwdGrid.setOnFocusChangeListener(this);
     }
-    
+
     public EditText getPwdView() {
         return m_pwdText;
     }
@@ -137,11 +140,11 @@ class UiPasswordManager
      * @return true if valid.
      */
     public boolean isValid() {
-        return (m_prefs.ShowPwd || m_prefs.ShowPat) ? true : m_pwdVerify.getText().toString()
+        return (m_prefs.ShowPwd || m_prefs.ShowPat) || m_pwdVerify.getText().toString()
                 .equals(m_pwdText.getText().toString());
     }
 
-    public void update() {
+    private void update() {
         int vis = m_prefs.ShowPat ? View.VISIBLE : View.GONE;
         m_pwdGrid.setVisibility(vis);
 
@@ -216,7 +219,7 @@ class UiPasswordManager
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (!s.equals(m_pwdGrid.getPassword())) {
+        if (!s.toString().equals(m_pwdGrid.getPassword())) {
             m_pwdGrid.setPassword(s.toString(), false);
         }
     }

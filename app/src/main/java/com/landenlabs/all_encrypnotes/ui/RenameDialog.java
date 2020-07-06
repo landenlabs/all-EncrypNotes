@@ -38,26 +38,27 @@ import com.landenlabs.all_encrypnotes.R;
 /**
  * Created by Dennis Lang on 7/5/2015.
  */
+@SuppressWarnings("Convert2Lambda")
 public class RenameDialog extends DialogFragment {
 
-    static final String STATE_LAYOUT = "Layout";
-    static final String STATE_MSGNUM = "MsgNum";
-    static final String STATE_FROM = "From";
-    static final String STATE_TO = "To";
+    private static final String STATE_LAYOUT = "Layout";
+    private static final String STATE_MSGNUM = "MsgNum";
+    private static final String STATE_FROM = "From";
+    private static final String STATE_TO = "To";
 
-    int m_layoutId;
-    int m_msgNum;
-    String m_fromStr;
-    String m_toStr;
+    private int m_layoutId;
+    private int m_msgNum;
+    private String m_fromStr;
+    private String m_toStr;
 
-    EditText m_fromET;
-    EditText m_toET;
+    private EditText m_fromET;
+    private EditText m_toET;
 
     // Required callback used on button clicks
-    DlgClickListener m_clickListener;
+    private DlgClickListener m_clickListener;
 
     // Caller auxilary view object.
-    Object m_view;
+    private Object m_view;
 
     public RenameDialog() {
         m_layoutId = -1;
@@ -89,6 +90,7 @@ public class RenameDialog extends DialogFragment {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public RenameDialog setViewer(Object view) {
         m_view = view;
         return this;
@@ -147,7 +149,7 @@ public class RenameDialog extends DialogFragment {
         m_toET = UiUtil.viewById(view, R.id.to_value);
         m_toET.setText(m_toStr);
 
-        Button okBtn = (Button) view.findViewById(R.id.okBtn);
+        Button okBtn = view.findViewById(R.id.okBtn);
         if (okBtn != null) {
             okBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -158,7 +160,7 @@ public class RenameDialog extends DialogFragment {
             });
         }
 
-        Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
+        Button cancelBtn = view.findViewById(R.id.cancelBtn);
         if (cancelBtn != null) {
             cancelBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -169,8 +171,7 @@ public class RenameDialog extends DialogFragment {
             });
         }
 
-        Dialog dialog = builder.create();
-        return dialog;
+        return builder.create();
     }
 
     public RenameDialog showIt(FragmentManager manager, String tag) {

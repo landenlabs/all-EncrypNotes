@@ -22,19 +22,18 @@ import java.lang.ref.WeakReference;
 
 public class AppCrash extends CrashManagerListener {
 
-    Context mContext;
+    private final Context mContext;
 
-    public AppCrash(Context context) {
+    private AppCrash(Context context) {
         mContext = context;
     }
 
     public static void initalize(Application application, boolean isDebug) {
-        Context context = application;
-        int keyResId = context.getResources().getIdentifier("hockeyapp_key", "string", context.getPackageName());
-        int pkgResId = context.getResources().getIdentifier("hockeyapp_pkg", "string", context.getPackageName());
+        int keyResId = ((Context) application).getResources().getIdentifier("hockeyapp_key", "string", ((Context) application).getPackageName());
+        int pkgResId = ((Context) application).getResources().getIdentifier("hockeyapp_pkg", "string", ((Context) application).getPackageName());
         if (keyResId > 0 && pkgResId > 0) {
-            final String HOCKEY_APP_ID = context.getResources().getString(keyResId);
-            final String HOCKEY_APP_PKG = context.getResources().getString(pkgResId);
+            final String HOCKEY_APP_ID = ((Context) application).getResources().getString(keyResId);
+            final String HOCKEY_APP_PKG = ((Context) application).getResources().getString(pkgResId);
 
             // HockeyApp Crash reporting
             // HockeyLog.setLogLevel(Log.VERBOSE);     // For debug testing only !!!!!
@@ -47,17 +46,17 @@ public class AppCrash extends CrashManagerListener {
              *
              *  Call execute to post any previously generated traces.
              */
-            AppCrash hockeyAppCrashListener = new AppCrash(context);
-            CrashManager.initialize(context, HOCKEY_APP_ID, hockeyAppCrashListener);
+            AppCrash hockeyAppCrashListener = new AppCrash(application);
+            CrashManager.initialize(application, HOCKEY_APP_ID, hockeyAppCrashListener);
             Constants.APP_PACKAGE = HOCKEY_APP_PKG;
             CrashMetaData crashMetaData = new CrashMetaData();
-            crashMetaData.setUserDescription(context.getApplicationInfo().processName);
-            crashMetaData.setUserID(context.getPackageName());
+            crashMetaData.setUserDescription(((Context) application).getApplicationInfo().processName);
+            crashMetaData.setUserID(((Context) application).getPackageName());
             CrashManager.handleUserInput(CrashManagerUserInput.CrashManagerUserInputAlwaysSend, crashMetaData, hockeyAppCrashListener,
-                    new WeakReference<Context>(context), false);
-            CrashManager.execute(context, hockeyAppCrashListener);
+                    new WeakReference<>(application), false);
+            CrashManager.execute(application, hockeyAppCrashListener);
 
-            MetricsManager.register((Application)context, HOCKEY_APP_ID);
+            MetricsManager.register(application, HOCKEY_APP_ID);
             MetricsManager.trackEvent("start");
         }
     }
@@ -65,21 +64,6 @@ public class AppCrash extends CrashManagerListener {
     @Override
     public boolean shouldAutoUploadCrashes() {
         return true;
-    }
-
-    @Override
-    public void onNewCrashesFound() {
-        super.onNewCrashesFound();
-    }
-
-    @Override
-    public void onCrashesNotSent() {
-        super.onCrashesNotSent();
-    }
-
-    @Override
-    public void onCrashesSent() {
-        super.onCrashesSent();
     }
 
     /**

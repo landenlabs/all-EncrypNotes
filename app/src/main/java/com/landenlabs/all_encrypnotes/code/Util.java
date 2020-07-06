@@ -21,7 +21,7 @@
  *
  */
 
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.code;
 
 /*
  * (c) 2009.-2010. Ivan Voras <ivoras@fer.hr>
@@ -31,10 +31,12 @@ package com.landenlabs.all_encrypnotes;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.landenlabs.all_encrypnotes.ui.LogIt;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
@@ -42,13 +44,13 @@ import java.text.SimpleDateFormat;
 
 /**
  * Original version by ivoras
+ *
  * @author ivoras
- *
- *
+ * <p>
+ * <p>
  * Updated and rewritten by Dennis Lang 2015/2016
  * @author Dennis Lang
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
- *
  */
 public class Util {
 
@@ -60,54 +62,46 @@ public class Util {
     }
 
     /**
-     * @param filename
      * @return {@code true} if file exists.
      */
-    public static boolean fileExists(String filename) {
+    @SuppressWarnings("SameParameterValue")
+    public  static boolean fileExists(String filename) {
         return new File(filename).exists();
     }
 
 
     /**
      * Returns a binary MD5 hash of the given string.
-     *
-     * @param s
-     * @return
      */
-    public static byte[] md5hash(String s) {
+    @NonNull
+    @SuppressWarnings("unused")
+    public static byte[] md5hash(@NonNull String s) {
         return hash(s, "MD5");
     }
 
-
     /**
      * Returns a binary MD5 hash of the given binary buffer.
-     *
-     * @param buf
-     * @return
      */
-    public static byte[] md5hash(byte[] buf) {
+    @NonNull
+    @SuppressWarnings("unused")
+    public static byte[] md5hash(@NonNull byte[] buf) {
         return hash(buf, "MD5");
     }
 
-
     /**
      * Returns a binary SHA1 hash of the given string.
-     *
-     * @param s
-     * @return
      */
-    public static byte[] sha1hash(String s) {
+    @NonNull
+    public static byte[] sha1hash(@NonNull String s) {
         return hash(s, "SHA1");
     }
 
 
     /**
      * Returns a binary SHA1 hash of the given buffer.
-     *
-     * @param buf
-     * @return
      */
-    public static byte[] sha1hash(byte[] buf) {
+    @NonNull
+    public static byte[] sha1hash(@NonNull byte[] buf) {
         return hash(buf, "SHA1");
     }
 
@@ -115,46 +109,29 @@ public class Util {
     /**
      * Returns a binary hash calculated with the specified algorithm of the
      * given string.
-     *
-     * @param s
-     * @param hashAlg
-     * @return
      */
-    public static byte[] hash(String s, String hashAlg) {
-        byte b[] = null;
-        try {
-            b = s.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            LogIt.log(Util.class, LogIt.ERROR, null, ex);
-            System.exit(1);
-        }
+    @NonNull
+    private static byte[] hash(@NonNull String s, @NonNull String hashAlg) {
+        byte[] b = s.getBytes(StandardCharsets.UTF_8);
         return hash(b, hashAlg);
     }
 
-
     /**
      * Converts a binary buffer to a string of lowercase hexadecimal characters.
-     *
-     * @param h
-     * @return
      */
-    public static String bytea2hex(byte[] h) {
+    @SuppressWarnings("unused")
+    public static String bytea2hex(@NonNull byte[] h) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < h.length; i++)
-            sb.append(String.format("%02x", h[i] & 0xff));
+        for (byte b : h) sb.append(String.format("%02x", b & 0xff));
         return sb.toString();
     }
-
 
     /**
      * Returns a binary hash calculated with the specified algorithm of the
      * given input buffer.
-     *
-     * @param buf
-     * @param hashAlg
-     * @return
      */
-    public static byte[] hash(byte[] buf, String hashAlg) {
+    @NonNull
+    private static byte[] hash(@NonNull byte[] buf, @NonNull String hashAlg) {
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance(hashAlg);
@@ -162,16 +139,11 @@ public class Util {
             LogIt.log(Util.class, LogIt.ERROR, null, ex);
             System.exit(1);
         }
-        return md.digest(buf);
+        return (md != null) ? md.digest(buf) : new byte[]{0};
     }
-
 
     /**
      * Concatenates two byte arrays and returns the result.
-     *
-     * @param src1
-     * @param src2
-     * @return
      */
     public static byte[] concat(byte[] src1, byte[] src2) {
         byte[] dst = new byte[src1.length + src2.length];
@@ -182,12 +154,11 @@ public class Util {
 
     public static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-        private static final String APP_VERSION_INFO_ID_FORMAT = "%s; version info";
         private static final String ERROR_REPORT_FORMAT = "yyyy.MM.dd HH:mm:ss z";
         @SuppressLint("SimpleDateFormat")
         private SimpleDateFormat format = new SimpleDateFormat(ERROR_REPORT_FORMAT);
 
-        private Thread.UncaughtExceptionHandler originalHandler;
+        private final Thread.UncaughtExceptionHandler originalHandler;
 
         /**
          * Creates a reporter instance

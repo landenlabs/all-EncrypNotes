@@ -1,4 +1,4 @@
-package com.landenlabs.all_encrypnotes;
+package com.landenlabs.all_encrypnotes.code;
 
 public interface SendMsg {
     int MSG_FAIL = 0;

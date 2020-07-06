@@ -43,7 +43,7 @@
             android:layout_height="30dp"
             android:nextFocusForward="@id/save_filename"
             android:background="@drawable/round_border_sel"
-            android:text="..." />
+            android:text="@string/save_dlg_3dots" />
         <EditText
             android:id="@id/save_filename"
             android:layout_width="fill_parent"

@@ -45,6 +45,7 @@ import java.io.InputStream;
  * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
  *
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class UiUtil {
 
     @SuppressWarnings("unchecked")
@@ -71,7 +72,7 @@ public class UiUtil {
         }
     }
     
-    public static Intent newEmailIntent(Context context, String address, String subject, String body, String cc) {
+    static Intent newEmailIntent(Context context, String address, String subject, String body, String cc) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] { address });
         intent.putExtra(Intent.EXTRA_TEXT, body);

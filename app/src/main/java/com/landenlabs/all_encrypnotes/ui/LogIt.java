@@ -44,6 +44,7 @@ import com.landenlabs.all_encrypnotes.BuildConfig;
  *   default is INFO for all TAGs.
  *
  */
+@SuppressWarnings("unused")
 public class LogIt {
 
     public static final int VERBOSE = Log.VERBOSE;
@@ -53,7 +54,7 @@ public class LogIt {
     public static final int ERROR = Log.ERROR;
 
 
-    static boolean s_debugMode = BuildConfig.DEBUG;
+    private static boolean s_debugMode = BuildConfig.DEBUG;
 
     public static void setDebugMode(ApplicationInfo appInfo) {
         s_debugMode = ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0);
@@ -62,7 +63,7 @@ public class LogIt {
     /**
      * Don't use this when obfuscating class names!
      */
-    public static String getTag(Class cls) {
+    private static String getTag(Class cls) {
         return cls.getSimpleName();
     }
 
@@ -102,15 +103,11 @@ public class LogIt {
         log(getTag(cls), level, message, t);
     }
 
-    public static void log(String tag, int level, String message, Throwable t) {
+    private static void log(String tag, int level, String message, Throwable t) {
         // Only log if build type is DEBUG
         if (s_debugMode && Log.isLoggable(tag, level)) {
             if (t != null) {
-                StringBuilder sb = new StringBuilder(message);
-                if (t != null) {
-                    sb.append("\n").append(Log.getStackTraceString(t));
-                }
-                message = sb.toString();
+                message = message + "\n" + Log.getStackTraceString(t);
             }
 
             Log.println(level, tag, message);

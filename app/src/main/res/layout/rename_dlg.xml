@@ -22,7 +22,7 @@
         android:layout_alignParentLeft="true"
         android:textSize="20sp"
         android:padding="4dp"
-        android:text="From:" />
+        android:text="@string/rename_dlg_from" />
 
     <EditText
         android:id="@+id/from_value"
@@ -42,7 +42,7 @@
         android:layout_alignParentLeft="true"
         android:textSize="20sp"
         android:padding="4dp"
-        android:text="To:" />
+        android:text="@string/rename_dlg_to" />
 
 
     <EditText
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/to_lb"
         android:background="@drawable/round_border"
-        android:hint="new name"
+        android:hint="@string/rename_dlg_new_name"
         android:imeOptions="actionNext"
         android:inputType="text"
         android:padding="4dp" />
