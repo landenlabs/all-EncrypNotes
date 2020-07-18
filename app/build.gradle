@@ -4,13 +4,12 @@ android {
         release
     }
     compileSdkVersion 29
-    // buildToolsVersion '24.0.3'
     defaultConfig {
         applicationId "com.landenlabs.encrypnotes"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1701
-        versionName '1.7.01'
+        versionCode 10718
+        versionName '1.07.18'
         signingConfig signingConfigs.release
     }
 
@@ -18,10 +17,6 @@ android {
         debug {
             minifyEnabled false
             signingConfig signingConfigs.debug
-
-            // applicationVariants.all { variant ->
-            //    appendVersionNameVersionCode(variant, defaultConfig)
-            // }
         }
         release {
             minifyEnabled true
@@ -49,22 +44,6 @@ android {
         }
     }
 
-    lintOptions {
-        abortOnError false
-        disable 'DefaultLocale', 'SimpleDateFormat', 'InflateParams', 'SpUsage',
-                'UseCompoundDrawables', 'HandlerLeak', 'ViewConstructor', 'SetTextI18n',
-                'RtlSymmetry', 'RtlHardcoded', 'ContentDescription',
-                'MissingTranslation', 'ValidFragment', 'UnusedAttribute'
-    }
-
-    productFlavors {
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     // Load signing config.
     def props = new Properties()
     props.load(new FileInputStream(rootProject.file("release.properties")))
@@ -72,6 +51,35 @@ android {
     android.signingConfigs.release.storePassword props.keyStorePassword
     android.signingConfigs.release.keyAlias props.keyAlias
     android.signingConfigs.release.keyPassword props.keyAliasPassword
+
+    productFlavors {
+    }
+
+    lintOptions {
+        abortOnError false
+        disable 'DefaultLocale', 'SimpleDateFormat', 'InflateParams', 'SpUsage',
+                'UseCompoundDrawables', 'HandlerLeak', 'ViewConstructor', 'SetTextI18n',
+                'RtlSymmetry', 'RtlHardcoded', 'ContentDescription',
+                'MissingTranslation', 'ValidFragment', 'UnusedAttribute',
+                'FieldCanBeLocal', 'LocalSuppress', 'HardcodedText', 'Typos'
+    }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            // Enable verbose lint reporting during build.
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -81,7 +89,7 @@ dependencies {
     implementation 'net.hockeyapp.android:HockeySDK:5.1.1'
 
     // Google sign-in
-    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
 
     // Google Drive
     implementation 'com.google.api-client:google-api-client:1.23.0'
@@ -113,18 +121,11 @@ dependencies {
 }
 
 
-def appendVersionNameVersionCode(variant, defaultConfig) {
-    variant.outputs.each { output ->
-        if (output.zipAlign) {
-            def file = output.outputFile
-            def fileName = file.name.replace(".apk", "-v" + defaultConfig.versionCode + ".apk")
-            def ourname = project.parent.name
-            fileName = fileName.replace("app-", "$ourname-")
-            output.outputFile = new File(file.parent, fileName)
-        }
-
-        def file = output.packageApplication.outputFile
-        def fileName = file.name.replace(".apk", "-v" + defaultConfig.versionCode + ".apk")
-        output.packageApplication.outputFile = new File(file.parent, fileName)
+// Rename app
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        def ourname = project.parent.name
+        outputFileName = "$ourname-${variant.name}-${variant.versionName}.apk"
+        println "out name= $outputFileName"
     }
 }
