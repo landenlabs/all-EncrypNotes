@@ -23,6 +23,8 @@
 
 package com.landenlabs.all_encrypnotes.ui;
 
+import static com.landenlabs.all_encrypnotes.ui.YesNoDialog.BTN_YES_NO;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,8 +36,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.landenlabs.all_encrypnotes.R;
-
-import static com.landenlabs.all_encrypnotes.ui.YesNoDialog.BTN_YES_NO;
 
 /**
  * Create a Web (html) viewer dialog.
