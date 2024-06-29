@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  *
  */
 
@@ -48,7 +48,7 @@ package com.landenlabs.all_encrypnotes.code.doc;
  *
  *
  *   @author Dennis Lang (modified original work)
- *   @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ *   @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  */
 
 import android.annotation.SuppressLint;

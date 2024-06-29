@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  *
  */
 
@@ -40,7 +40,7 @@ import com.landenlabs.all_encrypnotes.R;
  * Slider Dialog (ex: scale font)
  *
  * @author Dennis Lang
- * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  */
 @SuppressWarnings("Convert2Lambda")
 public class SliderDialog extends DialogFragment {

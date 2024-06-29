@@ -1,61 +1,82 @@
-apply plugin: 'com.android.application'
+// All-EncrypNotes
+// module build.gradle
+
+plugins {
+    id ("com.android.application")
+    id ("org.jetbrains.kotlin.android") // Prevents duplicate kotlin warnings
+}
 
 android {
     signingConfigs {
         release
     }
 
-    compileSdkVersion 33
+    compileSdk  34
+    namespace 'com.landenlabs.all_encrypnotes'
 
     defaultConfig {
         applicationId "com.landenlabs.encrypnotes"
 
-        minSdkVersion 23
-        targetSdkVersion 33
+        minSdkVersion 26
+        targetSdkVersion 34
 
-        versionCode 10718
-        versionName '1.07.18'
-        signingConfig signingConfigs.release
+        versionCode 20629
+        versionName '2.06.29'
+
+        // Limit languages to following list.
+        resourceConfigurations += ['en', 'es']
+        ndk {
+            // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+
+        buildConfigField "long", "BuildTimeMilli", System.currentTimeMillis() + "L"
     }
 
-    buildTypes {
-        debug {
-            minifyEnabled false
-            signingConfig signingConfigs.debug
-        }
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            signingConfig signingConfigs.release
 
-            // applicationVariants.all { variant ->
-            //    appendVersionNameVersionCode(variant, defaultConfig)
-            // }
-        }
+    // Save app version in string so resource can be used in layouts
+    applicationVariants.configureEach { variant ->
+        variant.resValue "string", "versionName", "v" + variant.versionName
     }
 
     signingConfigs {
-        debug {
-            storeFile file('../debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
+        release
+    }
+
+    // Load signing config (does not work for command line builds)
+    // println("Setting release=${rootDir}/release.properties")
+    if (file("${rootDir}/release.properties").exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(file("${rootDir}/release.properties")))
+        android.signingConfigs.release.storeFile = file(props.keyStore)
+        android.signingConfigs.release.storePassword = props.keyStorePassword
+        android.signingConfigs.release.keyAlias = props.keyAlias
+        android.signingConfigs.release.keyPassword = props.keyAliasPassword
+        println("Setting release to " + signingConfigs.release.storeFile.absolutePath )
+    }
+
+    buildTypes {
         release {
-            storeFile file('../release.keystore')
-            storePassword 'wsiweather'
-            keyAlias 'alias_name'
-            keyPassword 'wsiweather'
+            // Enables code shrinking, obfuscation, and optimization.
+            minifyEnabled true
+
+            // List of resources removed at end of generated mapping file:
+            // grep unused ./app/build/outputs/mapping/demoRelease/resources.txt
+            shrinkResources true
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
-    // Load signing config.
-    def props = new Properties()
-    props.load(new FileInputStream(rootProject.file("release.properties")))
-    android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
-    android.signingConfigs.release.storePassword props.keyStorePassword
-    android.signingConfigs.release.keyAlias props.keyAlias
-    android.signingConfigs.release.keyPassword props.keyAliasPassword
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile).tap {
+            configureEach {
+                // Enable verbose lint reporting during build.
+                options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+            }
+        }
+    }
 
     lintOptions {
         abortOnError false
@@ -65,26 +86,14 @@ android {
                 'MissingTranslation', 'ValidFragment', 'UnusedAttribute',
                 'FieldCanBeLocal', 'LocalSuppress', 'HardcodedText', 'Typos'
     }
-
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            // Enable verbose lint reporting during build.
-            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation "com.google.android.gms:play-services-analytics:18.0.2"
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation "com.google.android.gms:play-services-analytics:18.1.0"
 
     // Google sign-in
-    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
 
     // Google Drive
     implementation 'com.google.api-client:google-api-client:1.23.0'

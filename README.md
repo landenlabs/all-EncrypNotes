@@ -4,23 +4,23 @@ Android - Encrypted Notepad
 Apk v1.6 in app directory and on webpage.
 
 WebPage
-[http://landenlabs.com/android/encrypnotes/index.html](http://landenlabs.com/android/encrypnotes/index.html)
+[https://landenlabs.com/android/encrypnotes/index.html](https://landenlabs.com/android/encrypnotes/index.html)
 
-![welcome](http://landenlabs.com/android/encrypnotes/welcome.png)
+![welcome](https://landenlabs.com/android/encrypnotes/welcome.png)
 
 
 Encryp Notes is an encrypted notepad based off of code provided by [Ivan Voras (enotes)](http://sourceforge.net/projects/enotes/).
 
 Screen sample of EncrypNotes
 
-![Screen](http://landenlabs.com/android/encrypnotes/main-menu.png)
+![Screen](https://landenlabs.com/android/encrypnotes/main-menu.png)
 
 
 Encryp Notes takes Ivan's app further by adding a password grid pattern UI as an alternate way to provide passwords.
 
-![Lock Pattern](http://landenlabs.com/android/encrypnotes/grid-pattern.png)
+![Lock Pattern](https://landenlabs.com/android/encrypnotes/grid-pattern.png)
 
-![Lock Pattern](http://landenlabs.com/android/encrypnotes/grid-pattern-lock1.gif)
+![Lock Pattern](https://landenlabs.com/android/encrypnotes/grid-pattern-lock1.gif)
 
 
 The grid password UI is based off of code provided by [ahmed](https://github.com/asghonim/simple_android_lock_pattern).
@@ -57,17 +57,17 @@ To open and load an existing document, press the menu button and select **Open..
 
 After selecting a file you need to provide a valid password to decrypt the document. You can enter a password in the lower box using the keyboard or use the numeric grid pattern. To use the grid patten either drag your finger across the numeric buttons or tap on the buttons. Your numeric sequence will appear in the password text box at the bottom. By default the grid pattern is displayed and your password is displayed. If you prefer to hide your password you can hit the check box labeled show.
 
-![open1](http://landenlabs.com/android/encrypnotes/open-pwd1.png)
+![open1](https://landenlabs.com/android/encrypnotes/open-pwd1.png)
 
-![open2](http://landenlabs.com/android/encrypnotes/open-pwd2.png)
+![open2](https://landenlabs.com/android/encrypnotes/open-pwd2.png)
 
 
 **Save Document**
 
 Similar to loading a document, you save by accessing the menu and selecting Save or Save As. You can either enter a file name or use the file browser to find an existing file to replaced. Use the grid pattern or text box to enter a password. If you hide your password and grid pattern you will be forced to enter the password twice.
 
-![saveas1](http://landenlabs.com/android/encrypnotes/save-as1.png)
+![saveas1](https://landenlabs.com/android/encrypnotes/save-as1.png)
 
-![saveas2](http://landenlabs.com/android/encrypnotes/save-as2.png)
+![saveas2](https://landenlabs.com/android/encrypnotes/save-as2.png)
 
 

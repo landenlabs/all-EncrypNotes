@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  *
  */
 package com.landenlabs.all_encrypnotes.code.doc;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
  * provided a selectable file list.
  * 
  * @author Dennis Lang
- * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  *
  */
 public class FileListAdapter extends ArrayAdapter<String> implements View.OnClickListener,  View.OnLongClickListener  {

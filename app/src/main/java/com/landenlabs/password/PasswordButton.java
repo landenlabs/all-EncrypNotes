@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  *
  */
 
@@ -36,7 +36,7 @@ import com.landenlabs.all_encrypnotes.R;
  * <p>
  * @author ahmed v1 7/2/2014 <br>
  * Original version: {@link https ://github.com/asghonim/simple_android_lock_pattern}
- * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  */
 @SuppressWarnings("JavadocReference")
 public class PasswordButton extends androidx.appcompat.widget.AppCompatButton {

@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  *
  */
 
@@ -36,7 +36,7 @@ import com.landenlabs.all_encrypnotes.R;
  * Show Large application image and fade out.
  *
  * @author Dennis Lang
- * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+ * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
  */
 public class UiSplashScreen {
     
@@ -51,7 +51,7 @@ public class UiSplashScreen {
     
     /**
      * Show animated splash screen.
-     * @see <a href="http://landenlabs.com">http://landenlabs.com</a>
+     * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
      */
     public void show() {
         final int fadeinMsec = 2000;
