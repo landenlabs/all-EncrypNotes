@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ *  @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  *
  */
 
@@ -32,7 +32,7 @@ import com.landenlabs.all_encrypnotes.BuildConfig;
  * Created by Dennis Lang on 7/3/2015.
  *
  * @author Dennis Lang
- * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ * @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  *
  * Code lifted from:
  * https://developer.android.com/samples/MediaBrowserService/src/com.example.android.mediabrowserservice/utils/LogHelper.html

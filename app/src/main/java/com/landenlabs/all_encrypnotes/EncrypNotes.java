@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ *  @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  *
  */
 
@@ -115,7 +115,7 @@ import java.util.Set;
  * @author Ivan Voras <br>
  * WebSite: {@link http://sourceforge.net/projects/enotes/}
  * @version 1.3
- * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ * @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  * @since 2014-Nov-25
  */
 @SuppressWarnings({"JavadocReference", "Convert2Lambda", "unused", "ConstantConditions"})

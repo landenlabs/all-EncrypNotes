@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ *  @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  *
  */
 
@@ -72,7 +72,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * Updated and rewritten by Dennis Lang 2015/2016
  * @author Dennis Lang
- * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ * @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  * 
  */
 @SuppressWarnings({"JavadocReference", "UnusedReturnValue", "ResultOfMethodCallIgnored", "ConstantConditions", "SameParameterValue"})

@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ *  @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  *
  */
 
@@ -70,7 +70,7 @@ import java.util.List;
  * Custom attributes drawOff - drawable for off state drawOn - drawable for on state
  * pathWidth - path width pathAlpha - path alpha pathColor - path color (rotate when
  * overlapping)
- * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ * @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  */
 @SuppressWarnings({"FieldCanBeLocal", "JavadocReference"})
 public class PasswordGrid extends GridLayout {

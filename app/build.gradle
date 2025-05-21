@@ -55,6 +55,8 @@ android {
         println("Setting release to " + signingConfigs.release.storeFile.absolutePath )
     }
 
+    buildFeatures.buildConfig = true
+
     buildTypes {
         release {
             // Enables code shrinking, obfuscation, and optimization.
@@ -69,6 +71,7 @@ android {
         }
     }
 
+    /*
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile).tap {
             configureEach {
@@ -77,6 +80,7 @@ android {
             }
         }
     }
+     */
 
     lintOptions {
         abortOnError false

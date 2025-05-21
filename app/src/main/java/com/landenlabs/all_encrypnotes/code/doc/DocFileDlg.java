@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ *  @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  *
  */
 
@@ -67,7 +67,7 @@ import java.text.DateFormat;
  * Abstract base class for Load and Save Document file UI.
  * 
  * @author Dennis Lang
- * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ * @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  *
  */
 @SuppressWarnings({"UnnecessaryLocalVariable", "Convert2Lambda", "SameParameterValue", "ResultOfMethodCallIgnored", "unused"})

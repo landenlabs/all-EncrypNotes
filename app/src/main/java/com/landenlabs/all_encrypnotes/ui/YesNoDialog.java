@@ -17,7 +17,7 @@
  *  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  *  @author Dennis Lang  (Dec-2015)
- *  @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ *  @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  *
  */
 
@@ -43,7 +43,7 @@ import java.util.Objects;
  * Sends +msgNun on yes/ok or -msgNun on no.
  *
  * @author Dennis Lang
- * @see <a href="https://landenlabs.com">https://landenlabs.com</a>
+ * @see <a href="https://LanDenLabs.com">https://LanDenLabs.com</a>
  */
 @SuppressWarnings({"UnusedReturnValue", "Convert2Lambda"})
 public class YesNoDialog extends DialogFragment {
