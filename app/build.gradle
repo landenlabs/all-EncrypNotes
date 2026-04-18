@@ -2,159 +2,125 @@
 // module build.gradle
 
 plugins {
-    id ("com.android.application")
-    id ("org.jetbrains.kotlin.android") // Prevents duplicate kotlin warnings
+    id 'com.android.application'
 }
 
 android {
-    signingConfigs {
-        release
-    }
-
-    compileSdk  34
-    namespace 'com.landenlabs.all_encrypnotes'
+    namespace = 'com.landenlabs.all_encrypnotes'
+    compileSdk = 36
 
     defaultConfig {
-        applicationId "com.landenlabs.encrypnotes"
+        applicationId = "com.landenlabs.encrypnotes"
+        minSdk = 26
+        targetSdk = 36
 
-        minSdkVersion 26
-        targetSdkVersion 34
+        versionCode = 60419
+        versionName = '6.04.19'
+        // Restore the versionName resource for layouts
+        resValue "string", "versionName", "v" + versionName
 
-        versionCode 20629
-        versionName '2.06.29'
-
-        // Limit languages to following list.
         resourceConfigurations += ['en', 'es']
         ndk {
-            // abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
 
-        buildConfigField "long", "BuildTimeMilli", System.currentTimeMillis() + "L"
-    }
-
-
-    // Save app version in string so resource can be used in layouts
-    applicationVariants.configureEach { variant ->
-        variant.resValue "string", "versionName", "v" + variant.versionName
+        buildConfigField "long", "BuildTimeMilli", "${System.currentTimeMillis()}L"
     }
 
     signingConfigs {
-        release
+        release {
+            // Placeholder, will be populated below
+        }
     }
 
-    // Load signing config (does not work for command line builds)
-    // println("Setting release=${rootDir}/release.properties")
+    // Load signing config
     if (file("${rootDir}/release.properties").exists()) {
         def props = new Properties()
         props.load(new FileInputStream(file("${rootDir}/release.properties")))
-        android.signingConfigs.release.storeFile = file(props.keyStore)
-        android.signingConfigs.release.storePassword = props.keyStorePassword
-        android.signingConfigs.release.keyAlias = props.keyAlias
-        android.signingConfigs.release.keyPassword = props.keyAliasPassword
-        println("Setting release to " + signingConfigs.release.storeFile.absolutePath )
+        signingConfigs.release.storeFile = file(props.keyStore)
+        signingConfigs.release.storePassword = props.keyStorePassword
+        signingConfigs.release.keyAlias = props.keyAlias
+        signingConfigs.release.keyPassword = props.keyAliasPassword
+        println("Setting release to " + signingConfigs.release.storeFile.absolutePath)
     }
-
-    buildFeatures.buildConfig = true
 
     buildTypes {
         release {
-            // Enables code shrinking, obfuscation, and optimization.
-            minifyEnabled true
-
-            // List of resources removed at end of generated mapping file:
-            // grep unused ./app/build/outputs/mapping/demoRelease/resources.txt
-            shrinkResources true
-
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            minifyEnabled = true
+            shrinkResources = true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig = signingConfigs.release
         }
     }
 
-    /*
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile).tap {
-            configureEach {
-                // Enable verbose lint reporting during build.
-                options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-            }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
         }
     }
-     */
 
-    lintOptions {
-        abortOnError false
-        disable 'DefaultLocale', 'SimpleDateFormat', 'InflateParams', 'SpUsage',
+    buildFeatures {
+        buildConfig = true
+        resValues = true
+    }
+
+    lint {
+        abortOnError = false
+        disable += ['DefaultLocale', 'SimpleDateFormat', 'InflateParams', 'SpUsage',
                 'UseCompoundDrawables', 'HandlerLeak', 'ViewConstructor', 'SetTextI18n',
                 'RtlSymmetry', 'RtlHardcoded', 'ContentDescription',
                 'MissingTranslation', 'ValidFragment', 'UnusedAttribute',
-                'FieldCanBeLocal', 'LocalSuppress', 'HardcodedText', 'Typos'
+                'FieldCanBeLocal', 'LocalSuppress', 'HardcodedText', 'Typos']
     }
 
-    packagingOptions {
-        exclude("META-INF/DEPENDENCIES")
-        exclude("META-INF/LICENSE")
-        exclude("META-INF/LICENSE.txt")
-        exclude("META-INF/license.txt")
-        exclude("META-INF/NOTICE")
-        exclude("META-INF/NOTICE.txt")
-        exclude("META-INF/notice.txt")
-        exclude("META-INF/ASL2.0")
-        exclude("META-INF/*.kotlin_module")
+    packaging {
+        resources {
+            excludes += [
+                'META-INF/DEPENDENCIES',
+                'META-INF/LICENSE',
+                'META-INF/LICENSE.txt',
+                'META-INF/license.txt',
+                'META-INF/NOTICE',
+                'META-INF/NOTICE.txt',
+                'META-INF/notice.txt',
+                'META-INF/ASL2.0',
+                'META-INF/*.kotlin_module',
+                'META-INF/INDEX.LIST'
+            ]
+        }
     }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-
-    implementation "com.google.android.gms:play-services-analytics:18.1.1"
-
-    // Google sign-in
-    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.gms:play-services-analytics:18.1.1'
+    implementation 'com.google.android.gms:play-services-auth:21.5.1'
 
     // Google Drive
-    implementation 'com.google.api-client:google-api-client:1.30.9'
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.31.0'
+    implementation 'com.google.api-client:google-api-client:2.9.0'
+    implementation 'com.google.api-client:google-api-client-android:2.9.0'
+    implementation 'com.google.http-client:google-http-client-gson:2.1.0'
     implementation 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
 
-    implementation 'com.google.api-client:google-api-client-android:1.23.0' exclude module: 'httpclient'
-    implementation 'com.google.http-client:google-http-client-gson:1.23.0' exclude module: 'httpclient'
-
-
-    /*
-    implementation 'com.google.apis:google-api-services-tasks:v1-rev48-1.23.0' exclude module: 'httpclient'
-    implementation 'com.google.android.gms:play-services-identity:18.0.1'
-     */
-
-    /* hack to fix Duplicate class guava
-    https://stackoverflow.com/questions/56639529/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
-     */
+    // Fix for Duplicate class guava
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
-
-    /*
-    // Google Sheets with Firebase
-    implementation 'com.google.android.gms:play-services-auth:17.0.0'
-    implementation('com.google.api-client:google-api-client-android:1.23.0') {
-        exclude group: 'com.google.guava'
-    }
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    implementation('com.google.apis:google-api-services-sheets:v4-rev516-1.23.0') {
-        exclude group: 'com.google.guava'
-    }
-
-    // Firebase image storage
-    implementation 'com.google.firebase:firebase-messaging:20.1.0'
-    implementation 'com.google.firebase:firebase-storage:19.1.0'
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
-     */
 }
 
-
 // Rename app
-android.applicationVariants.configureEach { variant ->
-    variant.outputs.all {
-        def ourname = project.parent.name
-        outputFileName = "$ourname-${variant.name}-${variant.versionName}.apk"
-        println "out name= $outputFileName"
-    }
+androidComponents {
+    onVariants(selector().all(), { variant ->
+        variant.outputs.forEach { output ->
+            def ourName = project.parent.name
+            def buildType = variant.buildType
+            def versionStr = variant.outputs[0].versionName.get().replaceAll("-.*", "")
+            def flavor = variant.flavorName ?: ""
+            def newNameRoot = "${ourName}${flavor}-${buildType}-${versionStr}"
+            output.outputFileName.set("${newNameRoot}.apk")
+        }
+    })
 }

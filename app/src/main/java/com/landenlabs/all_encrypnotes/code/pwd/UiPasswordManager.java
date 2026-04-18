@@ -205,15 +205,12 @@ public class UiPasswordManager
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         int id = buttonView.getId();
-        switch (id) {
-            case R.id.pwd_patternCB:
-                m_prefs.ShowPat = isChecked;
-                update();
-                break;
-            case R.id.pwd_showCB:
-                m_prefs.ShowPwd = isChecked;
-                update();
-                break;
+        if (id == R.id.pwd_patternCB) {
+            m_prefs.ShowPat = isChecked;
+            update();
+        } else if (id == R.id.pwd_showCB) {
+            m_prefs.ShowPwd = isChecked;
+            update();
         }
     }
 
@@ -236,31 +233,24 @@ public class UiPasswordManager
     public void onClick(View view) {
         int id = view.getId();
         String str;
-        switch (id) {
-            case R.id.pwd_clear:
-                m_pwdText.setText("");
-                m_pwdGrid.clear();
-                break;
-            case R.id.pwd_del:
-                m_pwdGrid.deletePoint(-1);
-                /*
-                str = m_pwdText.getText().toString();
-                if (!TextUtils.isEmpty(str)) {
-                    m_pwdText.setText(str.substring(0, str.length() - 1));
-                }
-                */
-                break;
-
-            case R.id.pwd_verify_clear:
-                m_pwdVerify.setText("");
-                break;
-
-            case R.id.pwd_verify_del:
-                str = m_pwdVerify.getText().toString();
-                if (!TextUtils.isEmpty(str)) {
-                    m_pwdVerify.setText(str.substring(0, str.length() - 1));
-                }
-                break;
+        if (id == R.id.pwd_clear) {
+            m_pwdText.setText("");
+            m_pwdGrid.clear();
+        } else if (id == R.id.pwd_del) {
+            m_pwdGrid.deletePoint(-1);
+            /*
+            str = m_pwdText.getText().toString();
+            if (!TextUtils.isEmpty(str)) {
+                m_pwdText.setText(str.substring(0, str.length() - 1));
+            }
+            */
+        } else if (id == R.id.pwd_verify_clear) {
+            m_pwdVerify.setText("");
+        } else if (id == R.id.pwd_verify_del) {
+            str = m_pwdVerify.getText().toString();
+            if (!TextUtils.isEmpty(str)) {
+                m_pwdVerify.setText(str.substring(0, str.length() - 1));
+            }
         }
     }
 }

@@ -1,5 +1,10 @@
 # a LanDen Labs - EncrypNotes
 Android - Encrypted Notepad
+<br>18-Arp-2026
+<br>API 36 AndroidX Java
+<br>[Home website](https://landenlabs.com/android/index.html)
+
+<img src="screenshots/landenlabs.webp" width="300" alt="Logo">
 
 Apk v1.6 in app directory and on webpage.
 

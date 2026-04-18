@@ -72,7 +72,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
-import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.HttpTransport;
@@ -226,7 +225,7 @@ public class EncrypNotes extends Activity implements DlgClickListener, OnSeekBar
     GoogleAccountCredential credential;
     // com.google.api.services.tasks.Tasks service;
     Drive driveService;
-    final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
+    // final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
     final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 0;
     static final int REQUEST_AUTHORIZATION = 1;
@@ -241,8 +240,10 @@ public class EncrypNotes extends Activity implements DlgClickListener, OnSeekBar
 
             // service = new com.google.api.services.tasks.Tasks.Builder(httpTransport, jsonFactory, credential)
             //                .setApplicationName("EncrypNotes/1.0").build();
+            /*
             driveService = new Drive.Builder(httpTransport, jsonFactory, credential)
                     .setApplicationName("EncrypNotes/1.0").build();
+             */
         }
     }
 
@@ -631,27 +632,25 @@ public class EncrypNotes extends Activity implements DlgClickListener, OnSeekBar
      * /
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
-            case R.id.file_delete:
-                // File file = new File(m_storageDir + m_contextListView.getAdapter().getItem(info.position).toString() + DOC_EXT);
-                // boolean deleted = file.delete();
-                return true;
-        }
-
-        return super.onContextItemSelected(item);
-    }
- 
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
-        case R.id.file_delete:
+        int id = item.getItemId();
+        if (id == R.id.file_delete) {
             // File file = new File(m_storageDir + m_contextListView.getAdapter().getItem(info.position).toString() + DOC_EXT);
             // boolean deleted = file.delete();
             return true;
         }
-        
+
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.file_delete) {
+            // File file = new File(m_storageDir + m_contextListView.getAdapter().getItem(info.position).toString() + DOC_EXT);
+            // boolean deleted = file.delete();
+            return true;
+        }
+
         return super.onMenuItemSelected(featureId, item);
     }
 
@@ -662,119 +661,95 @@ public class EncrypNotes extends Activity implements DlgClickListener, OnSeekBar
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        int id = item.getItemId();
 
-            case R.id.menu_new:
-                newFile();
-                return true;
-
-            case R.id.menu_open:
-                loadFile();
-                return true;
-
-            case R.id.menu_save:
-                saveFileUI(DocFileDlg.SAVE);
-                return true;
-
-            case R.id.menu_save_as:
-                saveFileUI(DocFileDlg.SAVE_AS);
-                return true;
-
-            case R.id.menu_email:
-                if (m_mainText.getText().length() == 0) {
-                    WebDialog.show(this, WebDialog.HTML_CENTER_BOX, "<h2>Nothing to save</h2>");
-                    return false;
+        if (id == R.id.menu_new) {
+            newFile();
+            return true;
+        } else if (id == R.id.menu_open) {
+            loadFile();
+            return true;
+        } else if (id == R.id.menu_save) {
+            saveFileUI(DocFileDlg.SAVE);
+            return true;
+        } else if (id == R.id.menu_save_as) {
+            saveFileUI(DocFileDlg.SAVE_AS);
+            return true;
+        } else if (id == R.id.menu_email) {
+            if (m_mainText.getText().length() == 0) {
+                WebDialog.show(this, WebDialog.HTML_CENTER_BOX, "<h2>Nothing to save</h2>");
+                return false;
+            }
+            Email.send(this, "to@gmail.com", "EncrypNotes", m_mainText.getText().toString());
+            return true;
+        } else if (id == R.id.menu_about) {
+            m_splashScreen.show();
+            aboutBox();
+            return true;
+        } else if (id == R.id.menu_paranoid) {
+            m_prefs.Paranoid = !m_prefs.Paranoid;
+            item.setChecked(m_prefs.Paranoid);
+            return true;
+        } else if (id == R.id.menu_global_pwd) {
+            getGlobalPwdState(item);
+            return true;
+        } else if (id == R.id.menu_file_browser) {
+            openFileBrowser();
+            return true;
+        } else if (id == R.id.menu_invert) {
+            m_prefs.InvertBg = !m_prefs.InvertBg;
+            item.setChecked(m_prefs.InvertBg);
+            updateBg();
+            return true;
+        } else if (id == R.id.menu_zoom) {
+            SliderDialog sliderDlg = SliderDialog.create(R.layout.font_zoom_dlg, PRGMSG_FONT_ZOOM);
+            sliderDlg.show(getFragmentManager(), "font_zoom");
+            return true;
+        } else if (id == R.id.menu_copy || id == R.id.menu_paste || id == R.id.menu_cut || id == R.id.menu_clear) {
+            ClipboardManager cMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            if (id == R.id.menu_copy) {
+                if (m_mainText.length() != 0) {
+                    ClipData clip = ClipData.newPlainText("simple text", m_mainText.getText());
+                    cMan.setPrimaryClip(clip);
+                    YesNoDialog.showOk(this, "Copied " + m_mainText.length() + " characters");
                 }
-                Email.send(this, "to@gmail.com", "EncrypNotes", m_mainText.getText().toString());
                 return true;
-
-            case R.id.menu_about:
-                m_splashScreen.show();
-                aboutBox();
-                return true;
-
-            case R.id.menu_paranoid:
-                m_prefs.Paranoid = !m_prefs.Paranoid;
-                item.setChecked(m_prefs.Paranoid);
-                return true;
-
-            case R.id.menu_global_pwd:
-                // m_prefs.Global_pwd_state = !m_prefs.Global_pwd_state;
-                // item.setChecked(m_prefs.Global_pwd_state);
-                // if (item.isChecked()) {
-                getGlobalPwdState(item);
-                // }
-                return true;
-
-            case R.id.menu_file_browser:
-                openFileBrowser();
-                return true;
-
-            case R.id.menu_invert:
-                m_prefs.InvertBg = !m_prefs.InvertBg;
-                item.setChecked(m_prefs.InvertBg);
-                updateBg();
-                return true;
-
-            case R.id.menu_zoom:
-                SliderDialog sliderDlg = SliderDialog.create(R.layout.font_zoom_dlg, PRGMSG_FONT_ZOOM);
-                sliderDlg.show(getFragmentManager(), "font_zoom");
-                return true;
-
-            case R.id.menu_copy:
-            case R.id.menu_paste:
-            case R.id.menu_cut:
-            case R.id.menu_clear:
-                ClipboardManager cMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                switch (item.getItemId()) {
-                    case R.id.menu_copy:
-                        if (m_mainText.length() != 0) {
-                            ClipData clip = ClipData.newPlainText("simple text", m_mainText.getText());
-                            cMan.setPrimaryClip(clip);
-                            YesNoDialog.showOk(this, "Copied " + m_mainText.length() + " characters");
-                        }
-                        return true;
-
-                    case R.id.menu_paste:
-                        if (cMan.getPrimaryClip() != null && cMan.getPrimaryClip().getItemCount() != 0) {
-                            String pasteStr = cMan.getPrimaryClip().getItemAt(0).getText().toString();
-                            int beg = m_mainText.getSelectionStart();
-                            int end = m_mainText.getSelectionEnd();
-                            if (beg != -1 && end != -1) {
-                                m_mainText.setText(m_mainText.getText().replace(beg, end, pasteStr));
-                            } else {
-                                m_mainText.setText(m_mainText.getText() + pasteStr);
-                            }
-                        }
-                        return true;
-
-                    case R.id.menu_cut:
-                        if (m_mainText.length() != 0) {
-                            int beg = m_mainText.getSelectionStart();
-                            int end = m_mainText.getSelectionEnd();
-                            beg = (beg == -1) ? 0 : beg;
-                            end = (end == -1) ? m_mainText.length() : end;
-                            ClipData clip = ClipData.newPlainText("simple text", m_mainText.getText()
-                                    .subSequence(beg, end));
-                            cMan.setPrimaryClip(clip);
-                            m_mainText.setText(m_mainText.getText().replace(beg, end, ""));
-                        }
-                        return true;
-
-                    case R.id.menu_clear:
-                        if (m_mainText.length() != 0) {
-                            ClipData clip = ClipData.newPlainText("simple text", m_mainText.getText());
-                            cMan.setPrimaryClip(clip);
-                            m_mainText.setText("");
-                        }
-
-                        return true;
+            } else if (id == R.id.menu_paste) {
+                if (cMan.getPrimaryClip() != null && cMan.getPrimaryClip().getItemCount() != 0) {
+                    String pasteStr = cMan.getPrimaryClip().getItemAt(0).getText().toString();
+                    int beg = m_mainText.getSelectionStart();
+                    int end = m_mainText.getSelectionEnd();
+                    if (beg != -1 && end != -1) {
+                        m_mainText.setText(m_mainText.getText().replace(beg, end, pasteStr));
+                    } else {
+                        m_mainText.setText(m_mainText.getText() + pasteStr);
+                    }
                 }
-
-            case R.id.menu_info:
-                m_docFileDialog.showInfo();
-                break;
+                return true;
+            } else if (id == R.id.menu_cut) {
+                if (m_mainText.length() != 0) {
+                    int beg = m_mainText.getSelectionStart();
+                    int end = m_mainText.getSelectionEnd();
+                    beg = (beg == -1) ? 0 : beg;
+                    end = (end == -1) ? m_mainText.length() : end;
+                    ClipData clip = ClipData.newPlainText("simple text", m_mainText.getText()
+                            .subSequence(beg, end));
+                    cMan.setPrimaryClip(clip);
+                    m_mainText.setText(m_mainText.getText().replace(beg, end, ""));
+                }
+                return true;
+            } else if (id == R.id.menu_clear) {
+                if (m_mainText.length() != 0) {
+                    ClipData clip = ClipData.newPlainText("simple text", m_mainText.getText());
+                    cMan.setPrimaryClip(clip);
+                    m_mainText.setText("");
+                }
+                return true;
+            }
+        } else if (id == R.id.menu_info) {
+            m_docFileDialog.showInfo();
         }
+
         return false;
     }
 
@@ -885,22 +860,20 @@ public class EncrypNotes extends Activity implements DlgClickListener, OnSeekBar
             case CLKMSG_FILENAME_CHANGED:
                 updateTitle();
                 break;
-            case R.id.file_delete: {
-                YesNoDialog yesNoDialog = (YesNoDialog) dialog;
-                String filename = (String) yesNoDialog.getValue();
-                FileListAdapter fileListAdapter = (FileListAdapter) yesNoDialog.getViewer();
-                fileListAdapter.deleteFile(filename);
-            }
-            break;
-            case R.id.file_rename: {
-                RenameDialog renameDialog = (RenameDialog) dialog;
-                String fromFile = renameDialog.getFrom();
-                String toFile = renameDialog.getTo();
-                FileListAdapter fileListAdapter = (FileListAdapter) renameDialog.getViewer();
-                fileListAdapter.renameFile(fromFile, toFile);
-            }
-            break;
+
             default:  // CLKMSG_NONE
+                if (whichMsg == R.id.file_delete) {
+                    YesNoDialog yesNoDialog = (YesNoDialog) dialog;
+                    String filename = (String) yesNoDialog.getValue();
+                    FileListAdapter fileListAdapter = (FileListAdapter) yesNoDialog.getViewer();
+                    fileListAdapter.deleteFile(filename);
+                } else if (whichMsg == R.id.file_rename) {
+                    RenameDialog renameDialog = (RenameDialog) dialog;
+                    String fromFile = renameDialog.getFrom();
+                    String toFile = renameDialog.getTo();
+                    FileListAdapter fileListAdapter = (FileListAdapter) renameDialog.getViewer();
+                    fileListAdapter.renameFile(fromFile, toFile);
+                }
                 break;
         }
     }

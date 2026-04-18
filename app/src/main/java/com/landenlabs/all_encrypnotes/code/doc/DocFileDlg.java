@@ -278,24 +278,21 @@ public class DocFileDlg {
                     public boolean onMenuItemClick(MenuItem item) {
                         File file = fileListAdapter.getFile(filename);
 
-                        switch (item.getItemId()) {
-                            case R.id.file_delete:
-                                YesNoDialog.showDialog(m_context, "Delete ?",
-                                        String.format("Name:     %s\nModified: %s\nLength:    %,d",
-                                                filename, fileListAdapter.getDateStr(file), file.length()),
-                                        R.id.file_delete, YesNoDialog.BTN_YES_NO).setValue(filename).setViewer(fileListAdapter);
-                                break;
-                            case R.id.file_info:
-                                YesNoDialog.showDialog(m_context, "Info",
-                                        String.format("Name:     %s\nModified: %s\nLength:    %,d\n",
-                                                filename, fileListAdapter.getDateStr(file), file.length()) +
-                                                fileListAdapter.getInfoStr(file),
-                                        R.id.file_info, YesNoDialog.BTN_OK).setValue(filename).setViewer(fileListAdapter);
-                                break;
-                            case R.id.file_rename:
-                                RenameDialog renameDlg = RenameDialog.create(R.layout.rename_dlg, R.id.file_rename);
-                                renameDlg.showIt(m_context.getFragmentManager(), "renameDlg").setFrom(filename).setViewer(fileListAdapter);
-                                break;
+                        int itemId = item.getItemId();
+                        if (itemId == R.id.file_delete) {
+                            YesNoDialog.showDialog(m_context, "Delete ?",
+                                    String.format("Name:     %s\nModified: %s\nLength:    %,d",
+                                            filename, fileListAdapter.getDateStr(file), file.length()),
+                                    R.id.file_delete, YesNoDialog.BTN_YES_NO).setValue(filename).setViewer(fileListAdapter);
+                        } else if (itemId == R.id.file_info) {
+                            YesNoDialog.showDialog(m_context, "Info",
+                                    String.format("Name:     %s\nModified: %s\nLength:    %,d\n",
+                                            filename, fileListAdapter.getDateStr(file), file.length()) +
+                                            fileListAdapter.getInfoStr(file),
+                                    R.id.file_info, YesNoDialog.BTN_OK).setValue(filename).setViewer(fileListAdapter);
+                        } else if (itemId == R.id.file_rename) {
+                            RenameDialog renameDlg = RenameDialog.create(R.layout.rename_dlg, R.id.file_rename);
+                            renameDlg.showIt(m_context.getFragmentManager(), "renameDlg").setFrom(filename).setViewer(fileListAdapter);
                         }
                         return true;
                     }
