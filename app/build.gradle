@@ -15,7 +15,7 @@ android {
         targetSdk = 36
 
         versionCode = 60419
-        versionName = '6.04.19'
+        versionName = '6.04.19' // 2026 April(04) 19th
         // Restore the versionName resource for layouts
         resValue "string", "versionName", "v" + versionName
 
